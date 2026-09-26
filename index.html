@@ -86,6 +86,12 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .backupRes{margin:0;font-size:14px}
 .backupRes a{color:var(--accent);font-weight:700}
 .car{position:relative}
+.seriesWrap{position:relative;display:grid}
+.sugg{display:grid;margin-top:6px;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+.suggItem{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;padding:11px 12px;text-align:left;cursor:pointer;font-size:15px}
+.suggItem:last-child{border-bottom:0}
+.suggItem:hover,.suggItem.on{background:var(--surface2)}
+.suggItem small{flex:none;font-family:var(--mono);font-size:10.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
 .dup{border:1px solid var(--gold);background:color-mix(in srgb,var(--gold) 10%,var(--surface));border-radius:12px;padding:10px;display:grid;gap:8px}
 .dup .dupHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
 .dup .dupHead small{font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)}
@@ -294,7 +300,10 @@ form{display:grid;gap:10px}
   <form id="form" autocomplete="off">
     <label class="field"><span data-i18n="fName"></span><input id="fName" required placeholder="'67 Camaro"></label>
     <div class="dup" id="dup" hidden aria-live="polite"></div>
-    <label class="field"><span data-i18n="fSeries"></span><input id="fSeries" placeholder="HW Dream Garage"></label>
+    <div class="seriesWrap">
+      <label class="field"><span data-i18n="fSeries"></span><input id="fSeries" placeholder="HW Dream Garage" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="seriesSugg" aria-expanded="false"></label>
+      <div class="sugg" id="seriesSugg" role="listbox" hidden></div>
+    </div>
     <details class="more" id="more">
       <summary data-i18n="more"></summary>
       <div class="moreBody">
@@ -388,7 +397,7 @@ form{display:grid;gap:10px}
       toDark:"Mudar para tema escuro", toLight:"Mudar para tema claro", toLang:"Switch to English",
       lockOn:"Bloquear edição", lockOff:"Desbloquear edição", pinTitle:"Modo de edição", pinText:"Digite o PIN para cadastrar, editar e excluir carrinhos neste aparelho.",
       unlock:"Entrar", pinWrong:"PIN incorreto.", pinCheck:"Conferindo", unlocked:"Edição liberada", locked:"Edição bloqueada",
-      dupTitle:"Já está na garagem?", dupOne:"1 parecido", dupMany:"{n} parecidos", dupCode:"mesmo código", dupName:"mesmo nome", dupLike:"parecido",
+      dupTitle:"Já está na garagem?", dupOne:"1 parecido", dupMany:"{n} parecidos", dupCode:"mesmo código", dupName:"mesmo nome", dupLike:"parecido", mine:"na garagem", mineN:"{n} na garagem",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garagem 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
       aboutLegal:"Garagem 1:64 é um projeto independente e não possui afiliação oficial com a Mattel ou a marca Hot Wheels."
@@ -410,7 +419,7 @@ form{display:grid;gap:10px}
       toDark:"Switch to dark theme", toLight:"Switch to light theme", toLang:"Mudar para português",
       lockOn:"Lock editing", lockOff:"Unlock editing", pinTitle:"Edit mode", pinText:"Enter the PIN to add, edit and delete cars on this device.",
       unlock:"Unlock", pinWrong:"Wrong PIN.", pinCheck:"Checking", unlocked:"Editing unlocked", locked:"Editing locked",
-      dupTitle:"Already in your garage?", dupOne:"1 similar", dupMany:"{n} similar", dupCode:"same code", dupName:"same name", dupLike:"similar",
+      dupTitle:"Already in your garage?", dupOne:"1 similar", dupMany:"{n} similar", dupCode:"same code", dupName:"same name", dupLike:"similar", mine:"in garage", mineN:"{n} in garage",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garagem 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
       aboutLegal:"Garage 1:64 is an independent project and has no official affiliation with Mattel or the Hot Wheels brand."
@@ -614,6 +623,58 @@ form{display:grid;gap:10px}
   }
   let dT; const dupSoon = () => { clearTimeout(dT); dT = setTimeout(checkDup, 120); };
   $("fName").addEventListener("input", dupSoon);
+
+  /* sugestões de série */
+  const SERIES = [
+    "Factory Fresh","Truckin' Along","Batman","Drop Tops","HW Starting Grid","Layin' Low","Exoticars","HW Fan Driven","Nightbreed","Nightspeed",
+    "HW EV","Experimotors","X-Raycers","Ferrari","Then and Now","HW Dream Garage","Red Edition","HW Euro","HW J-Imports","Drag Racers",
+    "Sweet Rides","Compact Kings","Wagons","Rod Squad","Screen Time","HW Mods","Formula 1","HW Heavyweights","Mattel","HW All Drivers Welcome",
+    "Tooned","Cool Classics",
+    "HW Exotics","Muscle Mania","HW Roadsters","HW Race Day","HW Rescue","HW Hot Trucks","HW Metro","HW Art Cars","HW Green Speed",
+    "HW Turbo","HW Drift","HW Modified","Baja Blazers","Retro Racers","HW Screen Time","HW Wagons","HW Ride-Ons",
+    "Car Culture","Boulevard","Fast & Furious","Pop Culture","Team Transport","Red Line Club","Elite 64","Hot Wheels Premium"
+  ];
+  let suggIdx = -1;
+  function seriesOptions(q){
+    const nq = norm(q);
+    const counts = {};
+    cars.forEach(c => { const k = (c.series||"").trim(); if (k) counts[k] = (counts[k]||0) + 1; });
+    const mine = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+    const seen = new Set(), out = [];
+    const add = (name, n) => { const k = norm(name); if (!k || seen.has(k)) return; seen.add(k); out.push({ name, n }); };
+    const hit = name => !nq || norm(name).includes(nq);
+    const starts = name => norm(name).startsWith(nq) || norm(name).replace(/^hw /,"").startsWith(nq);
+    mine.filter(hit).forEach(n => add(n, counts[n]));
+    SERIES.filter(n => nq && starts(n)).forEach(n => add(n));
+    SERIES.filter(hit).forEach(n => add(n));
+    return out.filter(o => norm(o.name) !== nq || o.n).slice(0, 7);
+  }
+  function showSugg(){
+    const box = $("seriesSugg"), inp = $("fSeries");
+    if (!canEdit || inp.disabled || document.activeElement !== inp) { hideSugg(); return; }
+    const opts = seriesOptions(inp.value);
+    if (!opts.length) { hideSugg(); return; }
+    suggIdx = -1;
+    box.innerHTML = opts.map((o,i) => `<button type="button" class="suggItem" role="option" data-v="${esc(o.name)}"><span>${esc(o.name)}</span>${o.n?`<small>${esc(o.n>1?t("mineN").replace("{n}",o.n):t("mine"))}</small>`:""}</button>`).join("");
+    box.hidden = false; inp.setAttribute("aria-expanded","true");
+  }
+  function hideSugg(){ $("seriesSugg").hidden = true; $("fSeries").setAttribute("aria-expanded","false"); suggIdx = -1; }
+  function pickSugg(v){ $("fSeries").value = v; hideSugg(); }
+  $("fSeries").addEventListener("input", showSugg);
+  $("fSeries").addEventListener("focus", showSugg);
+  $("fSeries").addEventListener("blur", () => setTimeout(hideSugg, 120));
+  $("fSeries").addEventListener("keydown", e => {
+    const items = [...$("seriesSugg").querySelectorAll(".suggItem")];
+    if ($("seriesSugg").hidden || !items.length) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      suggIdx = (suggIdx + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+      items.forEach((b,i) => b.classList.toggle("on", i === suggIdx));
+    } else if (e.key === "Enter" && suggIdx >= 0) { e.preventDefault(); pickSugg(items[suggIdx].dataset.v); }
+    else if (e.key === "Escape") { e.stopPropagation(); hideSugg(); }
+  });
+  $("seriesSugg").addEventListener("pointerdown", e => e.preventDefault());
+  $("seriesSugg").addEventListener("click", e => { const b = e.target.closest(".suggItem"); if (b) pickSugg(b.dataset.v); });
   $("fCode").addEventListener("input", dupSoon);
   $("dup").addEventListener("click", e => { const b=e.target.closest(".dupItem"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
 
@@ -644,7 +705,7 @@ form{display:grid;gap:10px}
     refreshSheetTexts(); msg(""); $("scrim").hidden=false; $("sheet").hidden=false; $("sheet").scrollTop=0;
     if(!c && canEdit) setTimeout(()=>$("fName").focus(),60);
   }
-  function closeAll(){ ["sheet","about","pinSheet"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
+  function closeAll(){ hideSugg(); ["sheet","about","pinSheet"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
   $("aboutBtn").addEventListener("click", ()=>{ closeAll(); $("backupBox").hidden = !canEdit; $("backupRes").hidden = true; $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus(); });
   $("backupBtn").addEventListener("click", async () => {
     if (!canEdit) return;
