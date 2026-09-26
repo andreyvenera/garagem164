@@ -1,23 +1,762 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111418">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Garagem 1:64">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Coleção pessoal de Hot Wheels">
 <title>Garagem 1:64</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-  html, body { margin: 0; height: 100%; background: #111418; overflow: hidden; }
-  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+:root{
+  color-scheme:dark;
+  --bg:#111418;--surface:#1A1F26;--surface2:#232A33;--line:#2E3642;
+  --text:#E9EDF2;--muted:#8D98A8;--accent:#4C8DFF;--accent-ink:#06142E;
+  --gold:#E8B64A;--gold-ink:#1A1406;--danger:#FF6B5B;--ok:#4FC98A;
+  --shadow:0 18px 40px rgba(0,0,0,.45);
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme:light;
+    --bg:#EEF1F5;--surface:#FFFFFF;--surface2:#E4E9F0;--line:#D3DAE4;
+    --text:#151A21;--muted:#5B6676;--accent:#1F63E0;--accent-ink:#FFFFFF;
+    --gold:#B7861E;--gold-ink:#FFFFFF;--danger:#D23A2A;--ok:#1E8E57;
+    --shadow:0 18px 40px rgba(20,30,50,.18);
+  }
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#EEF1F5;--surface:#FFFFFF;--surface2:#E4E9F0;--line:#D3DAE4;
+  --text:#151A21;--muted:#5B6676;--accent:#1F63E0;--accent-ink:#FFFFFF;
+  --gold:#B7861E;--gold-ink:#FFFFFF;--danger:#D23A2A;--ok:#1E8E57;
+  --shadow:0 18px 40px rgba(20,30,50,.18);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.45;padding-inline:16px;padding-block:env(safe-area-inset-top,0px) 120px;min-height:100vh}
+img{max-width:100%}
+[hidden]{display:none!important}
+.lockBtn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.pinBox{display:grid;gap:10px}
+.pinBox input{font-family:var(--mono);font-size:22px;letter-spacing:.3em;text-align:center;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.about p.sub{margin:0 0 14px;color:var(--muted);font-size:14px}
+.skel{border-radius:12px;background:var(--surface);border:1px solid var(--line);aspect-ratio:3/4;max-width:100%}
+@media (prefers-reduced-motion:no-preference){.skel{animation:shim 1.2s ease-in-out infinite alternate}@keyframes shim{from{opacity:.55}to{opacity:1}}}
+.wrap{max-width:980px;margin:0 auto}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;margin-inline:-16px;padding-inline:16px;border-bottom:1px solid var(--line)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.brand{display:grid;gap:2px;min-width:0}
+.brand h1{font-family:var(--display);font-style:italic;font-weight:800;font-size:36px;line-height:.95;margin:0;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.acc{color:var(--accent)}
+.mode{font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.tag{margin:0;font-size:11px;color:var(--muted);line-height:1.3}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.link{border:0;background:none;color:var(--accent);font-weight:700;font-size:13px;padding:4px 0;cursor:pointer}
+.prefs{display:flex;align-items:center;gap:6px}
+.pill{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;font-family:var(--mono);font-size:11.5px;padding:4px 10px;cursor:pointer;min-height:28px}
+.pill:hover{border-color:var(--muted)}
+.pic img.ph{width:72%;height:auto;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25))}
+.photo img.ph{width:40%;height:auto;max-width:40%;object-fit:contain;margin-bottom:28px}
+.about .eyebrow{margin:0 0 2px;font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.about h2{font-size:40px;line-height:.95}
+.about .lead{margin:0 0 16px;font-size:16px;max-width:60ch}
+.facts{display:grid;margin:0 0 16px;border-top:1px solid var(--line)}
+.facts div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.facts dt{color:var(--muted);font-size:13px}
+.facts dd{margin:0;font-weight:700}
+.facts .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.legal{margin:0 0 8px;font-size:12.5px;color:var(--muted)}
+.backup{display:grid;gap:8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:14px;margin:0 0 14px}
+.backup .sub{margin:0}
+.backupRes{margin:0;font-size:14px}
+.backupRes a{color:var(--accent);font-weight:700}
+.car{position:relative}
+.dup{border:1px solid var(--gold);background:color-mix(in srgb,var(--gold) 10%,var(--surface));border-radius:12px;padding:10px;display:grid;gap:8px}
+.dup .dupHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
+.dup .dupHead small{font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)}
+.dupItem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:var(--bg);border-radius:9px;padding:6px;text-align:left;cursor:pointer}
+.dupItem:hover{outline:1px solid var(--line)}
+.dupItem .th{flex:none;width:56px;height:42px;border-radius:6px;background:var(--surface2);display:grid;place-items:center;overflow:hidden}
+.dupItem .th img{width:100%;height:100%;object-fit:cover}
+.dupItem .th img.ph{width:82%;height:auto;object-fit:contain}
+.dupItem b{display:block;font-size:14px;line-height:1.2;overflow-wrap:anywhere}
+.dupItem span{font-size:12px;color:var(--muted)}
+.dupItem .why{margin-left:auto;flex:none;font-family:var(--mono);font-size:10.5px;color:var(--gold)}
+.more{border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.more summary{cursor:pointer;list-style:none;padding:12px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:"+";font-family:var(--mono);color:var(--muted);font-size:16px;transition:transform .2s}
+.more[open] summary::after{transform:rotate(45deg)}
+.moreBody{display:grid;gap:10px;padding:0 12px 12px}
+.moreBody .field input,.moreBody .field select,.moreBody .field textarea{background:var(--surface)}
+@media (prefers-reduced-motion:no-preference){
+  .grid.enter .car{animation:rise .34s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 30ms)}
+  .car.pop{animation:pop .6s cubic-bezier(.2,.9,.25,1.15) both}
+  .car.pop::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 2px var(--accent);animation:ring 1.4s ease-out forwards}
+  .bump{display:inline-block;animation:bump .45s ease-out}
+  .dup:not([hidden]){animation:rise .22s ease-out}
+  .more[open] .moreBody{animation:rise .22s ease-out}
+  .chip{transition:background-color .15s,color .15s,transform .1s}
+  .chip:active,.fab:active,.btn:active{transform:scale(.96)}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes pop{0%{opacity:0;transform:scale(.82) translateY(8px)}60%{opacity:1;transform:scale(1.03)}100%{transform:none}}
+  @keyframes ring{0%,40%{opacity:1}100%{opacity:0}}
+  @keyframes bump{0%{transform:none}35%{transform:translateY(-3px) scale(1.12);color:var(--accent)}100%{transform:none}}
+}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+.stat b{display:block;font-family:var(--mono);font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat small{font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.stat.gold b{color:var(--gold)}
+
+.tools{display:flex;gap:8px;margin-top:12px}
+.search{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.sort{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 8px;max-width:130px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-block:10px 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+.examples{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;font-size:13px;color:var(--muted)}
+.examples button{border:0;background:none;color:var(--accent);font-weight:700;cursor:pointer;padding:4px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:14px}
+.car{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;display:flex;flex-direction:column}
+.car:hover{border-color:var(--muted)}
+.pic{position:relative;aspect-ratio:4/3;max-width:100%;background:radial-gradient(120% 90% at 50% 110%,var(--surface2),var(--surface));display:grid;place-items:center;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover}
+.pic svg{width:78%;height:auto}
+.badges{position:absolute;top:8px;left:8px;display:flex;gap:4px;flex-wrap:wrap}
+.b{font-family:var(--mono);font-size:10px;padding:2px 6px;border-radius:4px;background:var(--bg);color:var(--text);border:1px solid var(--line)}
+.b.th{border-color:var(--gold);color:var(--gold)}
+.b.sth{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+.b.want{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.b.ex{border-style:dashed;color:var(--muted)}
+.qty{position:absolute;right:8px;bottom:8px;font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.meta{padding:10px 12px 12px;display:grid;gap:2px}
+.meta h3{margin:0;font-size:15px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.meta p{margin:0;font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.meta .code{font-family:var(--mono);font-size:11px;color:var(--muted)}
+
+.empty{text-align:center;color:var(--muted);padding:48px 12px}
+.empty strong{display:block;color:var(--text);font-family:var(--display);font-style:italic;font-size:26px;text-transform:uppercase}
+
+.fab{flex:none;border:0;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;padding:13px 18px;cursor:pointer;font-size:15px}
+
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-radius:18px 18px 0 0;max-height:92%;overflow-y:auto;padding:14px 16px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:var(--shadow);max-width:640px;margin:0 auto}
+.grab{width:40px;height:4px;border-radius:4px;background:var(--line);margin:0 auto 12px}
+.sheet h2{font-family:var(--display);font-style:italic;font-weight:800;font-size:26px;text-transform:uppercase;margin:0 0 12px}
+.photo{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:12px;background:var(--surface2);display:grid;place-items:center;overflow:hidden;margin-bottom:12px;border:1px dashed var(--line)}
+.photo img{width:100%;height:100%;object-fit:cover}
+.photoBtns{position:absolute;right:10px;bottom:10px;display:flex;gap:6px}
+.photo label{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text)}
+.photo label.cam{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.photo input{position:absolute;width:1px;height:1px;opacity:0}
+.photo .hint{position:absolute;left:10px;bottom:12px;font-size:12px;color:var(--muted)}
+form{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:grid;gap:4px;min-width:0}
+.field span{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px}
+.field input[type=color]{padding:4px;height:42px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;border:0;background:transparent;padding:10px;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--bg);font-weight:700}
+.actions{display:flex;gap:8px;margin-top:6px}
+.btn{flex:1;border-radius:10px;padding:12px;border:1px solid var(--line);background:transparent;cursor:pointer;font-weight:700}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.danger.armed{background:var(--danger);color:#fff}
+.btn:disabled{opacity:.5;cursor:default}
+.msg{font-size:13px;color:var(--danger);min-height:1em}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--text);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:20;font-weight:500}
+@media (min-width:700px){.stats{max-width:560px}}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .22s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}}
+.bar .brand{flex:1;min-width:0}
+.bar .brand h1{font-size:clamp(22px,6.8vw,36px);overflow:hidden;text-overflow:clip}
+@media (max-width:420px){.bar .fab{padding:12px 15px;font-size:14px}}
+.bar .tag{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
-<iframe
-  src="https://script.google.com/macros/s/AKfycbx0PZ3sMJ4taUp7i7de4tCTT9kwxhe7kgpxUBsabmwuQL946nbCAHf6xjOwTAcYe4pPVw/exec"
-  title="Garagem 1:64"
-  allow="clipboard-write"></iframe>
+<style>
+  .splash{position:fixed;inset:0;z-index:100;background:#111418;color:#E9EDF2;display:grid;place-items:center;overflow:hidden;
+    font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;transition:opacity .45s ease,visibility .45s ease}
+  .splash.out{opacity:0;visibility:hidden}
+  .splash .sp-in{position:relative;display:grid;justify-items:center;gap:18px;padding:24px;text-align:center}
+  .splash .sp-eyebrow{margin:0;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#8D98A8}
+  .splash .sp-title{margin:0;font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-style:italic;font-weight:800;
+    text-transform:uppercase;line-height:.86;font-size:clamp(52px,15vw,132px);letter-spacing:.01em}
+  .splash .sp-title span{display:block}
+  .splash .sp-title .sp-scale{color:#4C8DFF}
+  .splash .sp-track{position:relative;width:min(240px,62vw);height:10px;border-radius:3px;overflow:hidden;background:#232A33}
+  .splash .sp-fill{position:absolute;inset:0;transform-origin:left;transform:scaleX(.08);
+    background:repeating-conic-gradient(#E9EDF2 0 25%,#111418 0 50%) 0 0/10px 10px}
+  .splash .sp-tag{margin:0;font-size:12.5px;color:#8D98A8}
+  .splash .sp-lines{position:absolute;inset:-40% -60%;pointer-events:none;opacity:.5;
+    background:repeating-linear-gradient(90deg,transparent 0 46px,rgba(76,141,255,.18) 46px 47px,transparent 47px 120px);
+    mask-image:radial-gradient(closest-side,#000,transparent);-webkit-mask-image:radial-gradient(closest-side,#000,transparent)}
+  @media (prefers-reduced-motion:no-preference){
+    .splash .sp-lines{animation:sp-rush .5s linear infinite}
+    .splash .sp-title span{animation:sp-in .7s cubic-bezier(.2,.8,.2,1) both}
+    .splash .sp-title .sp-scale{animation-delay:.14s}
+    .splash .sp-eyebrow,.splash .sp-track,.splash .sp-tag{animation:sp-fade .5s ease .35s both}
+    .splash .sp-fill{animation:sp-load 2.6s cubic-bezier(.3,.6,.2,1) .4s forwards}
+    .splash.done .sp-fill{animation:none;transform:scaleX(1);transition:transform .35s ease}
+    .splash.out .sp-in{transform:scale(1.06) translateX(14px);transition:transform .45s ease}
+    @keyframes sp-rush{to{transform:translateX(-120px)}}
+    @keyframes sp-in{from{opacity:0;transform:translateX(-60px) skewX(-12deg)}to{opacity:1;transform:none}}
+    @keyframes sp-fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @keyframes sp-load{to{transform:scaleX(.86)}}
+  }
+  .splash.done .sp-fill{transform:scaleX(1)}
+</style>
+<div class="splash" id="splash" role="status" aria-label="Garagem 1:64">
+  <div class="sp-lines" aria-hidden="true"></div>
+  <div class="sp-in">
+    <p class="sp-eyebrow">Coleção pessoal</p>
+    <h1 class="sp-title"><span>Garagem</span><span class="sp-scale">1:64</span></h1>
+    <div class="sp-track" aria-hidden="true"><div class="sp-fill"></div></div>
+    <p class="sp-tag">Abrindo a garagem</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="topline">
+      <span class="mode" id="mode"></span>
+      <div class="prefs">
+        <button class="pill" id="langBtn" type="button"></button>
+        <button class="pill" id="themeBtn" type="button"></button>
+        <button class="pill lockBtn" id="lockBtn" type="button" aria-pressed="false"></button>
+        <button class="link" id="aboutBtn" type="button" data-i18n="about"></button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="sTotal">0</b><small data-i18n="cars"></small></div>
+      <div class="stat"><b id="sPaid">$0</b><small data-i18n="invested"></small></div>
+    </div>
+    <div class="tools">
+      <input id="q" class="search" type="search" data-i18n-ph="searchPh" data-i18n-aria="search">
+      <select id="sort" class="sort" data-i18n-aria="sort">
+        <option value="new" data-i18n="sNew"></option>
+        <option value="name" data-i18n="sName"></option>
+        <option value="year" data-i18n="sYear"></option>
+        <option value="series" data-i18n="sSeries"></option>
+      </select>
+    </div>
+    <div class="chips" id="chips" role="toolbar" data-i18n-aria="filters"></div>
+  </header>
+
+  <main class="grid" id="grid" aria-live="polite"></main>
+  <div class="empty" id="empty" hidden></div>
+</div>
+
+<footer class="bar">
+  <div class="brand">
+    <h1><span data-i18n="brand"></span> <span class="acc">1:64</span></h1>
+    <p class="tag">Built for the collection. Made for the collectors. 🏁</p>
+  </div>
+  <button class="fab" id="add" type="button" data-i18n="add"></button>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<section class="sheet" id="sheet" hidden aria-modal="true" role="dialog" aria-labelledby="sheetTitle">
+  <div class="grab"></div>
+  <h2 id="sheetTitle"></h2>
+  <div class="photo" id="photoBox">
+    <div id="photoView"></div>
+    <span class="hint" id="photoHint"></span>
+    <div class="photoBtns" id="photoLabel">
+      <label for="camInput" class="cam"><span aria-hidden="true">📷</span> <span data-i18n="camera"></span></label>
+      <label for="photoInput" data-i18n="gallery"></label>
+    </div>
+    <input id="camInput" type="file" accept="image/*" capture="environment">
+    <input id="photoInput" type="file" accept="image/*">
+  </div>
+  <form id="form" autocomplete="off">
+    <label class="field"><span data-i18n="fName"></span><input id="fName" required placeholder="'67 Camaro"></label>
+    <div class="dup" id="dup" hidden aria-live="polite"></div>
+    <label class="field"><span data-i18n="fSeries"></span><input id="fSeries" placeholder="HW Dream Garage"></label>
+    <details class="more" id="more">
+      <summary data-i18n="more"></summary>
+      <div class="moreBody">
+        <div class="row">
+          <label class="field"><span data-i18n="fNum"></span><input id="fNum" placeholder="3/10"></label>
+          <label class="field"><span data-i18n="fYear"></span><input id="fYear" type="number" inputmode="numeric" min="1968" max="2100" placeholder="2026"></label>
+        </div>
+        <div class="row">
+          <label class="field"><span data-i18n="fCode"></span><input id="fCode" placeholder="HTB12"></label>
+          <label class="field"><span data-i18n="fQty"></span><input id="fQty" type="number" inputmode="numeric" min="1" value="1"></label>
+        </div>
+        <div class="row">
+          <label class="field"><span data-i18n="fType"></span>
+            <select id="fType">
+              <option value="Mainline">Mainline</option><option value="Premium">Premium</option><option value="RLC">RLC</option><option value="Outro" data-i18n="tOther"></option>
+            </select></label>
+          <label class="field"><span data-i18n="fCond"></span>
+            <select id="fCond"><option value="Na cartela" data-i18n="cCarded"></option><option value="Solto" data-i18n="cLoose"></option><option value="Cartela danificada" data-i18n="cDamaged"></option></select></label>
+        </div>
+        <div class="row">
+          <label class="field"><span data-i18n="fColor"></span><input id="fColor" type="color" value="#c8322a"></label>
+          <label class="field"><span data-i18n="fPaid"></span><input id="fPaid" type="number" inputmode="decimal" min="0" step="0.01" placeholder="1.25"></label>
+        </div>
+        <label class="field"><span data-i18n="fNotes"></span><textarea id="fNotes" rows="2" data-i18n-ph="notesPh"></textarea></label>
+      </div>
+    </details>
+    <div class="msg" id="msg"></div>
+    <div class="actions">
+      <button class="btn danger" type="button" id="del" hidden></button>
+      <button class="btn" type="button" id="cancel" data-i18n="close"></button>
+      <button class="btn primary" type="submit" id="save" data-i18n="save"></button>
+    </div>
+  </form>
+</section>
+
+<section class="sheet about" id="pinSheet" hidden aria-modal="true" role="dialog" aria-labelledby="pinTitle">
+  <div class="grab"></div>
+  <h2 id="pinTitle" data-i18n="pinTitle"></h2>
+  <p class="sub" data-i18n="pinText"></p>
+  <form class="pinBox" id="pinForm">
+    <input id="pinInput" type="password" inputmode="numeric" autocomplete="current-password" data-i18n-aria="pinTitle">
+    <div class="msg" id="pinMsg"></div>
+    <div class="actions">
+      <button class="btn" type="button" id="pinCancel" data-i18n="close"></button>
+      <button class="btn primary" type="submit" id="pinOk" data-i18n="unlock"></button>
+    </div>
+  </form>
+</section>
+
+<section class="sheet about" id="about" hidden aria-modal="true" role="dialog" aria-labelledby="aboutTitle">
+  <div class="grab"></div>
+  <p class="eyebrow" data-i18n="about"></p>
+  <h2 id="aboutTitle"><span data-i18n="brand"></span> <span class="acc">1:64</span></h2>
+  <p class="lead" data-i18n="aboutLead"></p>
+  <dl class="facts">
+    <div><dt data-i18n="version"></dt><dd class="num">1.0.0</dd></div>
+    <div><dt data-i18n="createdBy"></dt><dd>Andrey Marques</dd></div>
+    <div><dt data-i18n="year"></dt><dd class="num">2026</dd></div>
+  </dl>
+  <div class="backup" id="backupBox" hidden>
+    <p class="eyebrow" data-i18n="backupT"></p>
+    <p class="sub" data-i18n="backupD"></p>
+    <button class="btn primary" type="button" id="backupBtn" data-i18n="backupBtn"></button>
+    <p class="backupRes" id="backupRes" hidden></p>
+  </div>
+  <p class="legal">© 2026 Andrey Marques. All rights reserved.</p>
+  <p class="legal" data-i18n="aboutLegal"></p>
+  <div class="actions"><button class="btn" type="button" id="aboutClose" data-i18n="close"></button></div>
+</section>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const root = document.documentElement;
+  const T = {
+    pt: {
+      brand:"Garagem", about:"Sobre", cars:"carrinhos", invested:"investido", search:"Buscar", searchPh:"Buscar modelo, série, cor",
+      sort:"Ordenar", sNew:"Recentes", sName:"Nome", sYear:"Ano", sSeries:"Série", filters:"Filtros", fAll:"Todos", fLoose:"Soltos",
+      add:"＋ Adicionar", photo:"Foto", camera:"Tirar foto", gallery:"Galeria", fName:"Modelo", fSeries:"Série", fNum:"Nº na série", fYear:"Ano", fCode:"Código",
+      fType:"Linha", fCond:"Estado", fColor:"Cor", fQty:"Quantidade", fPaid:"Preço pago (US$)", fNotes:"Notas",
+      notesPh:"Onde achei, troca, detalhes da pintura", tOther:"Outro", cCarded:"Na cartela", cLoose:"Solto", cDamaged:"Cartela danificada",
+      close:"Fechar", save:"Salvar", saving:"Salvando", del:"Excluir", confirm:"Confirmar", noName:"Sem nome",
+      newCar:"Novo carrinho", editCar:"Editar carrinho", details:"Detalhes", more:"Mais detalhes",
+      emptyT:"Garagem vazia", emptyD:"Toque em Adicionar para cadastrar o primeiro carrinho.", emptyRO:"Nenhum carrinho cadastrado ainda.",
+      noneT:"Nada aqui", noneD:"Nenhum carrinho combina com essa busca ou filtro.",
+      badImg:"Não consegui abrir essa imagem. Tente uma foto em JPG ou PNG.", deleted:"Carrinho excluído", delFail:"Não foi possível excluir agora. Confira a internet e tente de novo.",
+      needName:"Dê um nome ao modelo.", savedEdit:"Alterações salvas", added:"Carrinho adicionado",
+      saveFail:"Não foi possível salvar agora. Confira a internet e tente de novo.", pinLost:"O PIN mudou. Desbloqueie a edição de novo.",
+      mRead:"só visualização", mSync:"sincronizado", mConn:"carregando", mSaving:"salvando", mOff:"sem conexão",
+      toDark:"Mudar para tema escuro", toLight:"Mudar para tema claro", toLang:"Switch to English",
+      lockOn:"Bloquear edição", lockOff:"Desbloquear edição", pinTitle:"Modo de edição", pinText:"Digite o PIN para cadastrar, editar e excluir carrinhos neste aparelho.",
+      unlock:"Entrar", pinWrong:"PIN incorreto.", pinCheck:"Conferindo", unlocked:"Edição liberada", locked:"Edição bloqueada",
+      dupTitle:"Já está na garagem?", dupOne:"1 parecido", dupMany:"{n} parecidos", dupCode:"mesmo código", dupName:"mesmo nome", dupLike:"parecido",
+      version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garagem 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
+      aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
+      aboutLegal:"Garagem 1:64 é um projeto independente e não possui afiliação oficial com a Mattel ou a marca Hot Wheels."
+    },
+    en: {
+      brand:"Garage", about:"About", cars:"cars", invested:"invested", search:"Search", searchPh:"Search model, series, color",
+      sort:"Sort", sNew:"Newest", sName:"Name", sYear:"Year", sSeries:"Series", filters:"Filters", fAll:"All", fLoose:"Loose",
+      add:"＋ Add", photo:"Photo", camera:"Take photo", gallery:"Gallery", fName:"Model", fSeries:"Series", fNum:"Series no.", fYear:"Year", fCode:"Code",
+      fType:"Line", fCond:"Condition", fColor:"Color", fQty:"Quantity", fPaid:"Price paid (US$)", fNotes:"Notes",
+      notesPh:"Where I found it, trades, paint details", tOther:"Other", cCarded:"Carded", cLoose:"Loose", cDamaged:"Damaged card",
+      close:"Close", save:"Save", saving:"Saving", del:"Delete", confirm:"Confirm", noName:"Untitled",
+      newCar:"New car", editCar:"Edit car", details:"Details", more:"More details",
+      emptyT:"Empty garage", emptyD:"Tap Add to register your first car.", emptyRO:"No cars registered yet.",
+      noneT:"Nothing here", noneD:"No car matches this search or filter.",
+      badImg:"Couldn't open this image. Try a JPG or PNG photo.", deleted:"Car deleted", delFail:"Couldn't delete right now. Check your connection and try again.",
+      needName:"Give the model a name.", savedEdit:"Changes saved", added:"Car added",
+      saveFail:"Couldn't save right now. Check your connection and try again.", pinLost:"The PIN changed. Unlock editing again.",
+      mRead:"view only", mSync:"synced", mConn:"loading", mSaving:"saving", mOff:"offline",
+      toDark:"Switch to dark theme", toLight:"Switch to light theme", toLang:"Mudar para português",
+      lockOn:"Lock editing", lockOff:"Unlock editing", pinTitle:"Edit mode", pinText:"Enter the PIN to add, edit and delete cars on this device.",
+      unlock:"Unlock", pinWrong:"Wrong PIN.", pinCheck:"Checking", unlocked:"Editing unlocked", locked:"Editing locked",
+      dupTitle:"Already in your garage?", dupOne:"1 similar", dupMany:"{n} similar", dupCode:"same code", dupName:"same name", dupLike:"similar",
+      version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garagem 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
+      aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
+      aboutLegal:"Garage 1:64 is an independent project and has no official affiliation with Mattel or the Hot Wheels brand."
+    }
+  };
+  const store = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
+  let lang = "pt"; /* sempre abre em português */
+  const t = k => (T[lang] && T[lang][k]) || T.pt[k] || k;
+  const COND = { "Na cartela":"cCarded", "Solto":"cLoose", "Cartela danificada":"cDamaged" };
+  const FILTERS = [["all","fAll"],["Mainline",null],["Premium",null],["RLC",null],["loose","fLoose"]];
+
+  /* servidor: o Apps Script da planilha responde como uma API */
+  const API = "https://script.google.com/macros/s/AKfycbx0PZ3sMJ4taUp7i7de4tCTT9kwxhe7kgpxUBsabmwuQL946nbCAHf6xjOwTAcYe4pPVw/exec";
+  const hasServer = true;
+  async function run(fn, ...args){
+    const r = fn === "listCars"
+      ? await fetch(API + "?action=list&t=" + Date.now(), { cache: "no-store" })
+      : await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: fn, args }) });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || "erro");
+    return j.data;
+  }
+  const isPinError = e => /PIN/.test(String(e && (e.message || e)));
+
+  let cars = [], filter = "all", mode = "loading", pin = store.get("garagem164.pin") || "", canEdit = false;
+  let editing = null, pendingPhoto = null, delArmed = false, busy = 0;
+  const localPreview = {}; // fotos recém enviadas, mostradas até o Drive gerar a miniatura
+
+  const sortSaved = store.get("garagem164.sort"); if (sortSaved) $("sort").value = sortSaved;
+
+  /* tema */
+  const effTheme = () => { const a = root.getAttribute("data-theme"); if (a==="dark"||a==="light") return a; return matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"; };
+  root.setAttribute("data-theme", "dark"); /* sempre abre no escuro */
+  function paintThemeBtn(){ const d = effTheme()==="dark"; $("themeBtn").textContent = d ? "☀" : "☾"; $("themeBtn").setAttribute("aria-label", d ? t("toLight") : t("toDark")); $("themeBtn").title = $("themeBtn").getAttribute("aria-label"); }
+  $("themeBtn").addEventListener("click", () => { const n = effTheme()==="dark" ? "light" : "dark"; root.setAttribute("data-theme", n); paintThemeBtn(); });
+  try { matchMedia("(prefers-color-scheme: light)").addEventListener("change", paintThemeBtn); } catch(e) {}
+
+  /* idioma */
+  function applyLang(){
+    root.lang = lang==="en" ? "en" : "pt-BR";
+    document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+    document.querySelectorAll("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
+    document.querySelectorAll("[data-i18n-aria]").forEach(el => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
+    $("langBtn").textContent = lang==="pt" ? "EN" : "PT";
+    $("langBtn").setAttribute("aria-label", t("toLang")); $("langBtn").title = t("toLang");
+    $("chips").innerHTML = FILTERS.map(([v,k]) => `<button class="chip" type="button" data-f="${v}" aria-pressed="${v===filter}">${k?t(k):v}</button>`).join("");
+    paintThemeBtn(); paintLock(); setMode(); render();
+    if (!$("sheet").hidden) refreshSheetTexts();
+  }
+  $("langBtn").addEventListener("click", () => { lang = lang==="pt" ? "en" : "pt"; applyLang(); });
+
+  const money = n => new Intl.NumberFormat(lang==="en"?"en-US":"pt-BR",{style:"currency",currency:"USD"}).format(n||0);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const PH = "ph.webp";
+  const carSvg = () => `<img class="ph" src="${PH}" alt="">`;
+  const photoUrl = c => c.photoId ? (localPreview[c.photoId] || "https://drive.google.com/thumbnail?id=" + encodeURIComponent(c.photoId) + "&sz=w1000") : "";
+
+  function toast(k){ const el=$("toast"); el.textContent=t(k); el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,2200); }
+  const msg = k => { $("msg").textContent = k ? t(k) : ""; };
+
+  $("chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(!b) return; filter=b.dataset.f; document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed", c===b)); render(true); });
+  let qT; $("q").addEventListener("input", () => { clearTimeout(qT); qT = setTimeout(()=>render(true), 140); });
+  $("sort").addEventListener("change", () => { store.set("garagem164.sort",$("sort").value); render(true); });
+
+  function match(c){
+    if (filter==="Mainline" && c.type!=="Mainline") return false;
+    if (filter==="Premium" && c.type!=="Premium") return false;
+    if (filter==="RLC" && c.type!=="RLC") return false;
+    if (filter==="loose" && c.cond!=="Solto") return false;
+    const q=$("q").value.trim().toLowerCase();
+    if (!q) return true;
+    return [c.name,c.series,c.code,c.notes,c.type,c.year,c.cond,COND[c.cond]?t(COND[c.cond]):""].join(" ").toLowerCase().includes(q);
+  }
+  function sorted(list){
+    const k=$("sort").value, a=[...list], loc = lang==="en"?"en":"pt-BR";
+    if(k==="name") a.sort((x,y)=>(x.name||"").localeCompare(y.name||"",loc));
+    else if(k==="year") a.sort((x,y)=>(y.year||0)-(x.year||0));
+    else if(k==="series") a.sort((x,y)=>(x.series||"").localeCompare(y.series||"",loc));
+    else a.sort((x,y)=>(y.createdAt||0)-(x.createdAt||0));
+    return a;
+  }
+
+  let seen = null, fresh = new Set(), lastTotal = null, loaded = false;
+  function bump(el){ el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+  function render(animate){
+    const total = cars.reduce((s,c)=>s+(+c.qty||1),0);
+    $("sTotal").textContent = total;
+    $("sPaid").textContent = money(cars.reduce((s,c)=>s+(+c.paid||0)*(+c.qty||1),0));
+    if (lastTotal!==null && total>lastTotal) { bump($("sTotal")); bump($("sPaid")); }
+    if (loaded) lastTotal = total;
+    if (!loaded) {}
+    else if (seen===null) seen = new Set(cars.map(c=>c.id));
+    else cars.forEach(c => { if (!seen.has(c.id)) { seen.add(c.id); fresh.add(c.id); } });
+
+    if (!loaded) {
+      $("empty").hidden = true;
+      $("grid").innerHTML = '<div class="skel"></div>'.repeat(4);
+      return;
+    }
+    const list = sorted(cars.filter(match));
+    $("empty").hidden = list.length>0;
+    const [et, ed] = !cars.length ? ["emptyT", canEdit ? "emptyD" : "emptyRO"] : ["noneT","noneD"];
+    $("empty").innerHTML = `<strong>${esc(t(et))}</strong>${esc(t(ed))}`;
+    $("grid").innerHTML = list.map((c,i) => {
+      const url = photoUrl(c);
+      const badges = [
+        c.type==="Premium" ? '<span class="b">PREMIUM</span>' : "",
+        c.type==="RLC" ? '<span class="b">RLC</span>' : ""
+      ].join("");
+      const sub = [c.series, c.num].filter(Boolean).join(" · ");
+      const line2 = [c.year, COND[c.cond] ? t(COND[c.cond]) : c.cond].filter(Boolean).join(" · ");
+      return `<button class="car${fresh.has(c.id)?" pop":""}" type="button" data-id="${esc(c.id)}" style="--i:${Math.min(i,12)}">
+        <div class="pic">${url?`<img src="${esc(url)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:carSvg()}
+          <div class="badges">${badges}</div>
+          ${(+c.qty||1)>1?`<span class="qty">×${+c.qty}</span>`:""}
+        </div>
+        <div class="meta"><h3>${esc(c.name||t("noName"))}</h3>
+          ${sub?`<p>${esc(sub)}</p>`:""}${line2?`<p>${esc(line2)}</p>`:""}
+          ${c.code?`<span class="code">${esc(c.code)}</span>`:""}
+        </div></button>`;
+    }).join("");
+    fresh.clear();
+    const g = $("grid"); g.classList.remove("enter");
+    if (animate) { void g.offsetWidth; g.classList.add("enter"); }
+  }
+  $("grid").addEventListener("click", e => { const b=e.target.closest(".car"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
+
+  /* modo e edição */
+  function setMode(){
+    const k = busy ? "mSaving" : mode==="loading" ? "mConn" : mode==="off" ? "mOff" : !canEdit ? "mRead" : "mSync";
+    $("mode").textContent = t(k);
+    $("add").hidden = !canEdit;
+  }
+  function paintLock(){
+    $("lockBtn").textContent = canEdit ? "🔓" : "🔒";
+    $("lockBtn").setAttribute("aria-pressed", String(canEdit));
+    const l = canEdit ? t("lockOn") : t("lockOff");
+    $("lockBtn").setAttribute("aria-label", l); $("lockBtn").title = l;
+  }
+  function setEdit(on){ canEdit = on; paintLock(); setMode(); render(); }
+  function lostPin(){ pin=""; store.del("garagem164.pin"); setEdit(false); }
+
+  function openPin(){
+    closeAll(); $("pinInput").value=""; $("pinMsg").textContent="";
+    $("scrim").hidden=false; $("pinSheet").hidden=false; setTimeout(()=>$("pinInput").focus(),60);
+  }
+  $("lockBtn").addEventListener("click", () => {
+    if (canEdit) { lostPin(); toast("locked"); } else openPin();
+  });
+  $("pinCancel").addEventListener("click", closeAll);
+  $("pinForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const p = $("pinInput").value.trim(); if (!p) return;
+    $("pinOk").disabled = true; $("pinOk").textContent = t("pinCheck");
+    try {
+      const ok = await run("checkPin", p);
+      if (ok) { pin = p; store.set("garagem164.pin", p); setEdit(true); closeAll(); toast("unlocked"); }
+      else { $("pinMsg").textContent = t("pinWrong"); $("pinInput").select(); }
+    } catch(err) { $("pinMsg").textContent = t("saveFail"); }
+    finally { $("pinOk").disabled = false; $("pinOk").textContent = t("unlock"); }
+  });
+
+  /* repetidos */
+  const norm = s => String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/['’`´]/g,"").replace(/[^a-z0-9]+/g," ").trim();
+  const words = s => norm(s).split(" ").filter(w => w.length>1 || /\d/.test(w));
+  function similar(name, code){
+    const n = norm(name), nw = words(name), cd = norm(code).replace(/ /g,"");
+    if (n.length < 3 && cd.length < 4) return [];
+    const out = [];
+    for (const c of cars) {
+      if (editing && c.id===editing.id) continue;
+      let why = null, score = 0;
+      const cn = norm(c.name), cc = norm(c.code).replace(/ /g,"");
+      if (cd.length>=4 && cc && cc===cd) { why="dupCode"; score=3; }
+      else if (n.length>=3 && cn===n) { why="dupName"; score=2; }
+      else if (n.length>=3 && cn) {
+        const cw = words(c.name);
+        const hit = nw.filter(w => cw.some(x => x===w || (w.length>=3 && x.startsWith(w)) || (x.length>=3 && w.startsWith(x)))).length;
+        const ratio = hit / Math.max(1, Math.min(nw.length, cw.length));
+        if (cn.includes(n) || n.includes(cn) || ratio>=0.6) { why="dupLike"; score=1+ratio/2; }
+      }
+      if (why) out.push({c, why, score});
+    }
+    return out.sort((a,b)=>b.score-a.score).slice(0,3);
+  }
+  function checkDup(){
+    if (!canEdit) { $("dup").hidden = true; return; }
+    const hits = similar($("fName").value, $("fCode").value);
+    if (!hits.length) { $("dup").hidden = true; $("dup").innerHTML = ""; return; }
+    const count = hits.length===1 ? t("dupOne") : t("dupMany").replace("{n}", hits.length);
+    $("dup").innerHTML = `<div class="dupHead">${esc(t("dupTitle"))}<small>${esc(count)}</small></div>` + hits.map(({c,why}) => {
+      const url = photoUrl(c);
+      const sub = [c.series, c.year, (+c.qty||1)>1 ? "×"+(+c.qty) : ""].filter(Boolean).join(" · ");
+      return `<button type="button" class="dupItem" data-id="${esc(c.id)}">
+        <span class="th">${url?`<img src="${esc(url)}" alt="" referrerpolicy="no-referrer">`:carSvg()}</span>
+        <span><b>${esc(c.name||t("noName"))}</b>${sub?`<span>${esc(sub)}</span>`:""}</span>
+        <span class="why">${esc(t(why))}</span></button>`;
+    }).join("");
+    $("dup").hidden = false;
+  }
+  let dT; const dupSoon = () => { clearTimeout(dT); dT = setTimeout(checkDup, 120); };
+  $("fName").addEventListener("input", dupSoon);
+  $("fCode").addEventListener("input", dupSoon);
+  $("dup").addEventListener("click", e => { const b=e.target.closest(".dupItem"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
+
+  /* ficha do carrinho */
+  function showPhoto(url){
+    $("photoView").innerHTML = url ? `<img src="${esc(url)}" alt="" referrerpolicy="no-referrer">` : carSvg();
+    $("photoView").style.cssText = "width:100%;height:100%;display:grid;place-items:center";
+  }
+  function refreshSheetTexts(){
+    $("sheetTitle").textContent = editing ? (canEdit ? t("editCar") : t("details")) : t("newCar");
+    $("del").textContent = delArmed ? t("confirm") : t("del");
+    if (!$("dup").hidden) checkDup();
+  }
+  function openSheet(c){
+    closeAll();
+    editing = c || null; pendingPhoto = null; delArmed = false;
+    $("more").open = !!c;
+    $("dup").hidden = true; $("dup").innerHTML = "";
+    $("fName").value = c?.name||""; $("fSeries").value=c?.series||""; $("fNum").value=c?.num||"";
+    $("fYear").value = c?.year||""; $("fCode").value=c?.code||""; $("fType").value=c?.type||"Mainline";
+    $("fCond").value = c?.cond||"Na cartela"; $("fColor").value=c?.color||"#c8322a"; $("fQty").value=c?.qty||1;
+    $("fPaid").value = c?.paid ?? ""; $("fNotes").value=c?.notes||"";
+    showPhoto(c ? photoUrl(c) : "");
+    $("photoLabel").hidden = !canEdit; $("photoHint").textContent = "";
+    $("del").hidden = !c || !canEdit; $("del").classList.remove("armed");
+    $("save").hidden = !canEdit;
+    document.querySelectorAll("#form input,#form select,#form textarea").forEach(el=>el.disabled=!canEdit);
+    refreshSheetTexts(); msg(""); $("scrim").hidden=false; $("sheet").hidden=false; $("sheet").scrollTop=0;
+    if(!c && canEdit) setTimeout(()=>$("fName").focus(),60);
+  }
+  function closeAll(){ ["sheet","about","pinSheet"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
+  $("aboutBtn").addEventListener("click", ()=>{ closeAll(); $("backupBox").hidden = !canEdit; $("backupRes").hidden = true; $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus(); });
+  $("backupBtn").addEventListener("click", async () => {
+    if (!canEdit) return;
+    const btn = $("backupBtn"), res = $("backupRes");
+    btn.disabled = true; btn.textContent = t("backupWorking"); res.hidden = true;
+    try {
+      const r = await run("backupCollection", pin);
+      res.innerHTML = `${esc(t("backupDone").replace("{n}", r.count))} <a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(t("backupOpen"))}</a>`;
+      res.hidden = false;
+    } catch (err) {
+      if (isPinError(err)) { lostPin(); $("backupBox").hidden = true; }
+      res.textContent = t(isPinError(err) ? "pinLost" : "backupFail"); res.hidden = false;
+    } finally { btn.disabled = false; btn.textContent = t("backupBtn"); }
+  });
+  $("aboutClose").addEventListener("click", closeAll);
+  $("add").addEventListener("click", ()=> canEdit ? openSheet(null) : openPin());
+  $("cancel").addEventListener("click", closeAll);
+  $("scrim").addEventListener("click", closeAll);
+  document.addEventListener("keydown", e => { if(e.key==="Escape" && !$("scrim").hidden) closeAll(); });
+
+  async function shrink(file, max=1000){
+    const url = URL.createObjectURL(file);
+    try{
+      const img = await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=url; });
+      const s = Math.min(1, max/Math.max(img.width,img.height));
+      const cv = document.createElement("canvas"); cv.width=Math.round(img.width*s); cv.height=Math.round(img.height*s);
+      cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);
+      return cv.toDataURL("image/jpeg",.82);
+    } finally { URL.revokeObjectURL(url); }
+  }
+  async function onPhoto(e){
+    const f = e.target.files[0]; e.target.value=""; if(!f) return;
+    try{ pendingPhoto = await shrink(f); showPhoto(pendingPhoto); msg(""); }
+    catch(err){ msg("badImg"); }
+  }
+  $("photoInput").addEventListener("change", onPhoto);
+  $("camInput").addEventListener("change", onPhoto);
+
+  function saveCache(){ try{ localStorage.setItem("garagem164.cache", JSON.stringify(cars)); }catch(e){} }
+
+  $("del").addEventListener("click", async () => {
+    if(!editing || !canEdit) return;
+    if(!delArmed){ delArmed=true; $("del").textContent=t("confirm"); $("del").classList.add("armed"); return; }
+    const c = editing;
+    $("del").disabled = true; busy++; setMode();
+    try{
+      await run("deleteCar", pin, c.id);
+      cars = cars.filter(x=>x.id!==c.id); saveCache(); render();
+      closeAll(); toast("deleted");
+    }catch(err){
+      if (isPinError(err)) { lostPin(); msg("pinLost"); } else msg("delFail");
+    }finally{ $("del").disabled = false; busy--; setMode(); }
+  });
+
+  $("form").addEventListener("submit", async e => {
+    e.preventDefault(); if(!canEdit) return;
+    const name=$("fName").value.trim(); if(!name){ msg("needName"); $("fName").focus(); return; }
+    const data = {
+      id: editing?.id || "", name, series:$("fSeries").value.trim(), num:$("fNum").value.trim(), year:+$("fYear").value||"",
+      code:$("fCode").value.trim().toUpperCase(), type:$("fType").value, cond:$("fCond").value,
+      color:$("fColor").value, qty:Math.max(1,+$("fQty").value||1), paid:$("fPaid").value===""?"":+$("fPaid").value,
+      notes:$("fNotes").value.trim(), createdAt: editing?.createdAt || ""
+    };
+    const was = !!editing, photo = pendingPhoto;
+    $("save").disabled=true; $("save").textContent=t("saving"); busy++; setMode();
+    try{
+      const saved = await run("saveCar", pin, data, photo ? photo.split(",")[1] : "");
+      if (photo && saved.photoId) localPreview[saved.photoId] = photo;
+      const i = cars.findIndex(x=>x.id===saved.id);
+      if (i>=0) cars[i] = saved; else cars.push(saved);
+      saveCache(); closeAll(); render(); toast(was?"savedEdit":"added");
+    }catch(err){
+      if (isPinError(err)) { lostPin(); msg("pinLost"); } else msg("saveFail");
+    }finally{ $("save").disabled=false; $("save").textContent=t("save"); busy--; setMode(); }
+  });
+
+  /* carregar */
+  async function load(){
+    try{
+      const list = await run("listCars");
+      cars = Array.isArray(list) ? list : [];
+      mode = "ready"; loaded = true; saveCache();
+    }catch(err){
+      mode = "off";
+      if (!loaded) { loaded = true; }
+    }
+    setMode(); render(!seen); splashReady();
+  }
+  try{ const c = JSON.parse(localStorage.getItem("garagem164.cache")||"null"); if (Array.isArray(c) && (!c.length || "photoId" in c[0])) { cars = c; loaded = true; } }catch(e){}
+
+  /* abertura */
+  const t0 = Date.now();
+  let splashDone = false;
+  function splashReady(){
+    if (splashDone) return; splashDone = true;
+    const sp = $("splash"); if (!sp) return;
+    setTimeout(() => {
+      sp.classList.add("done");
+      setTimeout(() => sp.classList.add("out"), 380);
+      setTimeout(() => sp.remove(), 900);
+    }, Math.max(0, 1700 - (Date.now() - t0)));
+  }
+  setTimeout(splashReady, 12000);
+
+  applyLang();
+  if (pin) run("checkPin", pin).then(ok => ok ? setEdit(true) : lostPin()).catch(()=>{});
+  load();
+  let lastSync = Date.now();
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState==="visible" && Date.now()-lastSync > 15000 && !busy) { lastSync = Date.now(); load(); }
+  });
+})();
+</script>
 </body>
 </html>
