@@ -499,6 +499,12 @@ button.stats:hover .stat{border-color:var(--muted)}
 .examples{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;font-size:13px;color:var(--muted)}
 .examples button{border:0;background:none;color:var(--accent);font-weight:700;cursor:pointer;padding:4px}
 
+.grid .car.folded{display:none}
+.moreBtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:12px 0 4px;padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.moreBtn:hover{border-color:var(--accent);color:var(--accent)}
+.moreBtn small{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400}
+.moreBtn .chev{transition:transform .15s}
+.moreBtn[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:14px}
 .car{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;display:flex;flex-direction:column}
 .car:hover{border-color:var(--muted)}
@@ -659,6 +665,7 @@ form{display:grid;gap:10px}
   </header>
 
   <main class="grid" id="grid" aria-live="polite"></main>
+  <button class="moreBtn" id="moreBtn" type="button" hidden aria-controls="grid" aria-expanded="false"></button>
   <div class="empty" id="empty" hidden></div>
 </div>
 
@@ -917,7 +924,7 @@ form{display:grid;gap:10px}
       badImg:"Não consegui abrir essa imagem. Tente uma foto em JPG ou PNG.", deleted:"Carrinho excluído", delFail:"Não foi possível excluir agora. Confira a internet e tente de novo.",
       needName:"Dê um nome ao modelo.", savedEdit:"Alterações salvas", added:"Carrinho adicionado",
       saveFail:"Não foi possível salvar agora. Confira a internet e tente de novo.", pinLost:"O PIN mudou. Desbloqueie a edição de novo.",
-      mRead:"só visualização", mSync:"sincronizado", refresh:"Atualizar", fRemove:"Remover", fRemovedHead:"Removidos", fBack:"Adicionar de volta", fRemovedToast:"Amigo removido", fBackToast:"Amigo de volta na lista", refreshWarp:"Atualizando a garagem", refreshed:"Garagem atualizada", refreshFail:"Sem conexão agora. Tente de novo.", mConn:"carregando", mSaving:"salvando", mOff:"sem conexão",
+      mRead:"só visualização", mSync:"sincronizado", refresh:"Atualizar", seeMore:"Ver mais", seeLess:"Ver menos", fRemove:"Remover", fRemovedHead:"Removidos", fBack:"Adicionar de volta", fRemovedToast:"Amigo removido", fBackToast:"Amigo de volta na lista", refreshWarp:"Atualizando a garagem", refreshed:"Garagem atualizada", refreshFail:"Sem conexão agora. Tente de novo.", mConn:"carregando", mSaving:"salvando", mOff:"sem conexão",
       toDark:"Mudar para tema escuro", toLight:"Mudar para tema claro", toLang:"Switch to English",
       lockOn:"Bloquear edição", lockOff:"Desbloquear edição", pinTitle:"Modo de edição", pinText:"Digite o PIN para cadastrar, editar e excluir carrinhos neste aparelho.",
       unlock:"Entrar", pinWrong:"PIN incorreto.", pinCheck:"Conferindo", unlocked:"Edição liberada", locked:"Edição bloqueada",
@@ -952,7 +959,7 @@ form{display:grid;gap:10px}
       badImg:"Couldn't open this image. Try a JPG or PNG photo.", deleted:"Car deleted", delFail:"Couldn't delete right now. Check your connection and try again.",
       needName:"Give the model a name.", savedEdit:"Changes saved", added:"Car added",
       saveFail:"Couldn't save right now. Check your connection and try again.", pinLost:"The PIN changed. Unlock editing again.",
-      mRead:"view only", mSync:"synced", refresh:"Refresh", fRemove:"Remove", fRemovedHead:"Removed", fBack:"Add back", fRemovedToast:"Friend removed", fBackToast:"Friend is back on the list", refreshWarp:"Refreshing the garage", refreshed:"Garage refreshed", refreshFail:"No connection right now. Try again.", mConn:"loading", mSaving:"saving", mOff:"offline",
+      mRead:"view only", mSync:"synced", refresh:"Refresh", seeMore:"See more", seeLess:"See less", fRemove:"Remove", fRemovedHead:"Removed", fBack:"Add back", fRemovedToast:"Friend removed", fBackToast:"Friend is back on the list", refreshWarp:"Refreshing the garage", refreshed:"Garage refreshed", refreshFail:"No connection right now. Try again.", mConn:"loading", mSaving:"saving", mOff:"offline",
       toDark:"Switch to dark theme", toLight:"Switch to light theme", toLang:"Mudar para português",
       lockOn:"Lock editing", lockOff:"Unlock editing", pinTitle:"Edit mode", pinText:"Enter the PIN to add, edit and delete cars on this device.",
       unlock:"Unlock", pinWrong:"Wrong PIN.", pinCheck:"Checking", unlocked:"Editing unlocked", locked:"Editing locked",
@@ -1124,9 +1131,28 @@ form{display:grid;gap:10px}
         </div></button>`;
     }).join("");
     fresh.clear();
+    applyFold();
     const g = $("grid"); g.classList.remove("enter");
     if (animate) { void g.offsetWidth; g.classList.add("enter"); }
   }
+  /* tela inicial mostra só a primeira linha; "Ver mais" abre o resto (busca sempre mostra tudo) */
+  var gridOpen = false;
+  function applyFold(){
+    const g = $("grid"), btn = $("moreBtn"), cards = [...g.querySelectorAll(".car")];
+    const cols = Math.max(1, getComputedStyle(g).gridTemplateColumns.split(" ").filter(Boolean).length);
+    const searching = $("q").value.trim() !== "";
+    const extra = cards.length - cols;
+    if (searching || extra <= 0) { cards.forEach(c => c.classList.remove("folded")); btn.hidden = true; return; }
+    cards.forEach((c, i) => c.classList.toggle("folded", !gridOpen && i >= cols));
+    btn.hidden = false; btn.setAttribute("aria-expanded", String(gridOpen));
+    btn.innerHTML = gridOpen ? `${esc(t("seeLess"))} <span class="chev" aria-hidden="true">▾</span>`
+      : `${esc(t("seeMore"))} <small>+${extra}</small> <span class="chev" aria-hidden="true">▾</span>`;
+  }
+  $("moreBtn").addEventListener("click", () => {
+    gridOpen = !gridOpen; applyFold();
+    if (!gridOpen) $("grid").scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
+  let foldT; window.addEventListener("resize", () => { clearTimeout(foldT); foldT = setTimeout(applyFold, 120); });
   $("grid").addEventListener("click", e => { const b=e.target.closest(".car"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
 
   /* modo, conta e garagem em exibição */
@@ -2052,10 +2078,10 @@ form{display:grid;gap:10px}
 
   /* atualização automática: se o GitHub tiver uma versão mais nova do que a aberta, recarrega uma vez */
   /* versão do app: mostrada no rodapé e na cartela do Sobre */
-  const APP_VERSION = "2.0.1"
+  const APP_VERSION = "2.1.0"
   const DEFAULT_PAID = "1.25";
   document.querySelectorAll(".appVersion").forEach(el => el.textContent = APP_VERSION);
-  const BUILD = "202609270155";
+  const BUILD = "202609270205";
   (async () => {
     try {
       const r = await fetch(location.pathname + "?build=" + Date.now(), { cache: "no-store" });
