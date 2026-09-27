@@ -125,6 +125,56 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
   @keyframes bump{0%{transform:none}35%{transform:translateY(-3px) scale(1.12);color:var(--accent)}100%{transform:none}}
 }
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+button.stats{width:100%;border:0;background:none;padding:0;cursor:pointer;text-align:left;grid-template-columns:1fr 1fr;row-gap:6px;color:inherit}
+button.stats .stat{display:block}
+.garageTile{display:flex;align-items:center;gap:12px;width:100%;margin-top:8px;padding:10px 14px 10px 10px;border-radius:12px;cursor:pointer;text-align:left;color:var(--text);
+  border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 22%,var(--surface)),var(--surface) 70%)}
+.garageTile:hover{border-color:var(--accent)}
+.gtIcon{flex:none;width:46px;height:46px;border-radius:11px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink)}
+.gtText{display:grid;min-width:0}
+.gtText b{font-family:var(--display);font-style:italic;font-weight:800;font-size:22px;line-height:1;text-transform:uppercase;letter-spacing:.02em}
+.gtText small{font-size:12.5px;color:var(--muted);margin-top:3px}
+.gtGo{margin-left:auto;flex:none;font-size:26px;line-height:1;color:var(--accent);font-weight:700}
+@media (prefers-reduced-motion:no-preference){.garageTile{transition:transform .12s ease,border-color .15s}.garageTile:active{transform:scale(.98)}}
+button.stats:hover .stat{border-color:var(--muted)}
+.garage h2{margin:0}
+.gTop{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:14px}
+.gTitle{min-width:0}
+.mascot{position:relative;flex:none;width:clamp(72px,22vw,96px);margin-top:-6px}
+.mascot img{display:block;width:100%;height:auto;transform:rotate(7deg);filter:drop-shadow(0 8px 14px rgba(0,0,0,.35))}
+.bubble{position:absolute;top:2px;right:calc(100% - 4px);white-space:nowrap;background:var(--text);color:var(--bg);font-weight:700;font-size:12.5px;line-height:1;padding:7px 10px;border-radius:12px 12px 2px 12px}
+.bubble::after{content:"";position:absolute;right:-5px;bottom:0;border:6px solid transparent;border-left-color:var(--text);border-bottom-color:var(--text);border-width:0 0 8px 8px}
+@media (prefers-reduced-motion:no-preference){
+  .mascot.play img{animation:mascotIn .7s cubic-bezier(.2,1.5,.4,1) both, mascotWobble 2.6s ease-in-out .8s infinite}
+  .mascot.play .bubble{animation:bubbleIn .35s cubic-bezier(.2,1.4,.4,1) .55s both}
+  @keyframes mascotIn{0%{opacity:0;transform:translateY(40px) rotate(-10deg) scale(.6)}100%{opacity:1;transform:rotate(7deg)}}
+  @keyframes mascotWobble{0%,100%{transform:rotate(7deg)}50%{transform:rotate(2deg) translateY(-2px)}}
+  @keyframes bubbleIn{from{opacity:0;transform:scale(.4) translateX(10px)}to{opacity:1;transform:none}}
+}
+.gGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.gStat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.gStat b{display:block;font-family:var(--mono);font-size:20px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gStat small{font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.gHead{margin:0 0 8px;font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.gHi{display:grid;gap:8px;margin-bottom:18px}
+.gItem{display:flex;align-items:center;gap:10px;width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px;text-align:left;cursor:pointer}
+.gItem:hover{border-color:var(--muted)}
+.gItem .th{flex:none;width:64px;height:48px;border-radius:7px;background:var(--surface2);display:grid;place-items:center;overflow:hidden}
+.gItem .th img{width:100%;height:100%;object-fit:cover}
+.gItem .th img.ph{width:84%;height:auto;object-fit:contain}
+.gTxt{display:grid;min-width:0}
+.gTxt small{font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.gTxt b{font-size:14.5px;line-height:1.25;overflow-wrap:anywhere}
+.gTxt span{font-size:12px;color:var(--muted)}
+.gVal{margin-left:auto;flex:none;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.gEmpty{margin:0;color:var(--muted);font-size:14px}
+.bars{display:grid;gap:8px;margin-bottom:18px}
+.barRow{display:grid;grid-template-columns:minmax(0,34%) 1fr auto;align-items:center;gap:10px}
+.barLabel{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.barTrack{height:10px;border-radius:5px;background:var(--surface2);overflow:hidden}
+.barFill{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.barN{font-family:var(--mono);font-size:12.5px;font-variant-numeric:tabular-nums;min-width:2ch;text-align:right}
+@media (prefers-reduced-motion:no-preference){.garage:not([hidden]) .barFill{animation:grow .6s cubic-bezier(.2,.8,.2,1) both}@keyframes grow{from{width:0}}}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
 .stat b{display:block;font-family:var(--mono);font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat small{font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
@@ -254,10 +304,19 @@ form{display:grid;gap:10px}
         <button class="link" id="aboutBtn" type="button" data-i18n="about"></button>
       </div>
     </div>
-    <div class="stats">
-      <div class="stat"><b id="sTotal">0</b><small data-i18n="cars"></small></div>
-      <div class="stat"><b id="sPaid">$0</b><small data-i18n="invested"></small></div>
-    </div>
+    <button class="stats" id="garageBtn" type="button" data-i18n-aria="garageOpen">
+      <span class="stat"><b id="sTotal">0</b><small data-i18n="cars"></small></span>
+      <span class="stat"><b id="sPaid">$0</b><small data-i18n="invested"></small></span>
+    </button>
+    <button class="garageTile" id="garageTile" type="button">
+      <span class="gtIcon" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 13.5 16 5l13 8.5"/><path d="M6 12v15h20V12"/><path d="M10 27V16h12v11"/><path d="M10 19.5h12M10 23h12"/>
+        </svg>
+      </span>
+      <span class="gtText"><b data-i18n="garage"></b><small data-i18n="garageSub"></small></span>
+      <span class="gtGo" aria-hidden="true">›</span>
+    </button>
     <div class="tools">
       <input id="q" class="search" type="search" data-i18n-ph="searchPh" data-i18n-aria="search">
       <select id="sort" class="sort" data-i18n-aria="sort">
@@ -353,6 +412,28 @@ form{display:grid;gap:10px}
   </form>
 </section>
 
+<section class="sheet about garage" id="garage" hidden aria-modal="true" role="dialog" aria-labelledby="garageTitle">
+  <div class="grab"></div>
+  <div class="gTop">
+    <div class="gTitle">
+      <p class="eyebrow" data-i18n="garageEyebrow"></p>
+      <h2 id="garageTitle"><span data-i18n="garage"></span></h2>
+    </div>
+    <div class="mascot" id="mascot" aria-hidden="true">
+      <span class="bubble" id="gBubble"></span>
+      <img src="mascote.webp" alt="" width="207" height="300">
+    </div>
+  </div>
+  <div class="gGrid" id="gSummary"></div>
+  <h3 class="gHead" data-i18n="gHighlights"></h3>
+  <div class="gHi" id="gHighlights"></div>
+  <h3 class="gHead" data-i18n="gBrands"></h3>
+  <div class="bars" id="gBrands"></div>
+  <h3 class="gHead" data-i18n="gLines"></h3>
+  <div class="bars" id="gLines"></div>
+  <div class="actions"><button class="btn" type="button" id="garageClose" data-i18n="close"></button></div>
+</section>
+
 <section class="sheet about" id="about" hidden aria-modal="true" role="dialog" aria-labelledby="aboutTitle">
   <div class="grab"></div>
   <p class="eyebrow" data-i18n="about"></p>
@@ -398,6 +479,8 @@ form{display:grid;gap:10px}
       lockOn:"Bloquear edição", lockOff:"Desbloquear edição", pinTitle:"Modo de edição", pinText:"Digite o PIN para cadastrar, editar e excluir carrinhos neste aparelho.",
       unlock:"Entrar", pinWrong:"PIN incorreto.", pinCheck:"Conferindo", unlocked:"Edição liberada", locked:"Edição bloqueada",
       dupTitle:"Já está na garagem?", dupOne:"1 parecido", dupMany:"{n} parecidos", dupCode:"mesmo código", dupName:"mesmo nome", dupLike:"parecido", mine:"na garagem", mineN:"{n} na garagem",
+      garage:"Minha garagem", garageSub:"Resumo, destaques e marcas", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
+      gHighlights:"Destaques", gTop:"Mais caro", gLow:"Mais barato", gLast:"Último adicionado", gBrands:"Por marca", gLines:"Por linha", gOther:"Originais e outras", gNone:"Cadastre carrinhos para ver os detalhes aqui.", gWow:"{n} carrinhos?!", gWowOne:"Só 1 carrinho?!", gWowZero:"Garagem vazia?!", gNoPrice:"sem preço",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garagem 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
       aboutLegal:"Garagem 1:64 é um projeto independente e não possui afiliação oficial com a Mattel ou a marca Hot Wheels."
@@ -420,6 +503,8 @@ form{display:grid;gap:10px}
       lockOn:"Lock editing", lockOff:"Unlock editing", pinTitle:"Edit mode", pinText:"Enter the PIN to add, edit and delete cars on this device.",
       unlock:"Unlock", pinWrong:"Wrong PIN.", pinCheck:"Checking", unlocked:"Editing unlocked", locked:"Editing locked",
       dupTitle:"Already in your garage?", dupOne:"1 similar", dupMany:"{n} similar", dupCode:"same code", dupName:"same name", dupLike:"similar", mine:"in garage", mineN:"{n} in garage",
+      garage:"My garage", garageSub:"Summary, highlights and makes", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
+      gHighlights:"Highlights", gTop:"Most expensive", gLow:"Cheapest", gLast:"Latest added", gBrands:"By make", gLines:"By line", gOther:"Originals and others", gNone:"Add cars to see the details here.", gWow:"{n} cars?!", gWowOne:"Just 1 car?!", gWowZero:"Empty garage?!", gNoPrice:"no price",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garagem 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
       aboutLegal:"Garage 1:64 is an independent project and has no official affiliation with Mattel or the Hot Wheels brand."
@@ -705,8 +790,80 @@ form{display:grid;gap:10px}
     refreshSheetTexts(); msg(""); $("scrim").hidden=false; $("sheet").hidden=false; $("sheet").scrollTop=0;
     if(!c && canEdit) setTimeout(()=>$("fName").focus(),60);
   }
-  function closeAll(){ hideSugg(); ["sheet","about","pinSheet"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
-  $("aboutBtn").addEventListener("click", ()=>{ closeAll(); $("backupBox").hidden = !canEdit; $("backupRes").hidden = true; $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus(); });
+  /* minha garagem */
+  const BRANDS = [
+    ["Porsche",["porsche"]],["Nissan",["nissan","skyline","gt-r","gtr","silvia","fairlady","370z","350z","240sx"]],["Datsun",["datsun","510","240z"]],
+    ["Toyota",["toyota","supra","ae86","corolla","celica","land cruiser","tacoma","hilux","gr86","gr yaris","mr2"]],["Honda",["honda","civic","nsx","s2000","integra","crx","odyssey"]],
+    ["Acura",["acura"]],["Mazda",["mazda","rx-7","rx7","rx-3","miata","mx-5","rx-8","787b"]],["Mitsubishi",["mitsubishi","lancer","evo","3000gt","eclipse","pajero"]],
+    ["Subaru",["subaru","wrx","impreza","brz"]],["Lexus",["lexus"]],["Infiniti",["infiniti"]],["Hyundai",["hyundai"]],["Kia",["kia"]],
+    ["Ford",["ford","mustang","bronco","f-150","f150","gt40","gt-40","raptor","falcon","escort","sierra","model a","model t","thunderbird","crown victoria","transit","maverick"]],
+    ["Chevrolet",["chevrolet","chevy","camaro","corvette","impala","chevelle","silverado","c10","nova","el camino","bel air","blazer","tahoe","s-10"]],
+    ["Dodge",["dodge","charger","challenger","viper","demon","ram ","durango","coronet","dart"]],["Plymouth",["plymouth","barracuda","cuda","road runner","superbird","fury"]],
+    ["Pontiac",["pontiac","gto","firebird","trans am"]],["Buick",["buick"]],["Cadillac",["cadillac"]],["Lincoln",["lincoln"]],["Oldsmobile",["oldsmobile"]],["AMC",["amc","javelin","gremlin"]],
+    ["Jeep",["jeep","wrangler","gladiator"]],["Tesla",["tesla","cybertruck"]],["Rivian",["rivian"]],
+    ["BMW",["bmw","m3","m4","m1","2002","z4"]],["Mercedes-Benz",["mercedes","benz","amg","g-class","sls"]],["Audi",["audi","quattro","r8"]],
+    ["Volkswagen",["volkswagen","vw ","beetle","fusca","golf","kombi","t1","t2","bus","scirocco","jetta","rabbit"]],["Porsche",["911","918","959","taycan","cayman","boxster"]],
+    ["Ferrari",["ferrari","testarossa","enzo","laferrari","f40","f50","dino"]],["Lamborghini",["lamborghini","countach","huracan","huracán","aventador","urus","miura","diablo","murcielago","sian","revuelto"]],
+    ["McLaren",["mclaren","senna","720s","p1"]],["Aston Martin",["aston martin","db5","vantage"]],["Bugatti",["bugatti","chiron","veyron"]],["Koenigsegg",["koenigsegg","jesko","agera"]],
+    ["Pagani",["pagani","zonda","huayra"]],["Lotus",["lotus"]],["Jaguar",["jaguar","e-type"]],["Land Rover",["land rover","range rover","defender"]],["Mini",["mini cooper","mini "]],
+    ["Fiat",["fiat"]],["Alfa Romeo",["alfa romeo","alfa"]],["Volvo",["volvo"]],["Maserati",["maserati"]],["Shelby",["shelby","cobra"]],["DeLorean",["delorean"]],["Batmobile",["batmobile"]]
+  ];
+  function brandOf(name){
+    const n = " " + String(name||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"") + " ";
+    for (const [b, keys] of BRANDS) if (keys.some(k => n.includes(k.length <= 4 && !k.includes(" ") ? " " + k : k))) return b;
+    return null;
+  }
+  const qtyOf = c => Math.max(1, +c.qty || 1);
+  function miniCar(c, label, value){
+    const url = photoUrl(c);
+    return `<button type="button" class="gItem" data-id="${esc(c.id)}">
+      <span class="th">${url?`<img src="${esc(url)}" alt="" loading="lazy">`:carSvg()}</span>
+      <span class="gTxt"><small>${esc(label)}</small><b>${esc(c.name||t("noName"))}</b>${c.series?`<span>${esc(c.series)}</span>`:""}</span>
+      <span class="gVal">${esc(value)}</span></button>`;
+  }
+  function bars(rows){
+    const max = Math.max(1, ...rows.map(r => r[1]));
+    return rows.map(([label, n]) => `<div class="barRow"><span class="barLabel">${esc(label)}</span><span class="barTrack"><span class="barFill" style="width:${Math.max(4, n / max * 100).toFixed(1)}%"></span></span><span class="barN">${n}</span></div>`).join("");
+  }
+  function renderGarage(){
+    const total = cars.reduce((s,c)=>s+qtyOf(c),0);
+    const models = new Set(cars.map(c => norm(c.name))).size;
+    const priced = cars.filter(c => c.paid != null && c.paid !== "" && !isNaN(+c.paid));
+    const invested = priced.reduce((s,c)=>s+(+c.paid)*qtyOf(c),0);
+    const pricedQty = priced.reduce((s,c)=>s+qtyOf(c),0);
+    const avg = pricedQty ? invested / pricedQty : 0;
+    $("gBubble").textContent = total === 0 ? t("gWowZero") : total === 1 ? t("gWowOne") : t("gWow").replace("{n}", total);
+    $("gSummary").innerHTML = [[total,"gCars"],[models,"gModels"],[money(invested),"gInvested"],[pricedQty?money(avg):"—","gAvg"]]
+      .map(([v,k]) => `<div class="gStat"><b>${esc(v)}</b><small>${esc(t(k))}</small></div>`).join("");
+    if (!cars.length) {
+      $("gHighlights").innerHTML = `<p class="gEmpty">${esc(t("gNone"))}</p>`;
+      $("gBrands").innerHTML = ""; $("gLines").innerHTML = ""; return;
+    }
+    const byPrice = [...priced].sort((a,b)=>(+b.paid)-(+a.paid));
+    const last = [...cars].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))[0];
+    const hi = [];
+    if (byPrice.length) hi.push(miniCar(byPrice[0], t("gTop"), money(+byPrice[0].paid)));
+    if (byPrice.length > 1) hi.push(miniCar(byPrice[byPrice.length-1], t("gLow"), money(+byPrice[byPrice.length-1].paid)));
+    if (last) hi.push(miniCar(last, t("gLast"), last.createdAt ? new Date(last.createdAt).toLocaleDateString(lang==="en"?"en-US":"pt-BR",{day:"2-digit",month:"short"}) : ""));
+    $("gHighlights").innerHTML = hi.join("");
+    const bc = {}; let other = 0;
+    cars.forEach(c => { const b = brandOf(c.name); if (b) bc[b] = (bc[b]||0) + qtyOf(c); else other += qtyOf(c); });
+    let brandRows = Object.entries(bc).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+    if (brandRows.length > 10) { other += brandRows.slice(10).reduce((s,r)=>s+r[1],0); brandRows = brandRows.slice(0,10); }
+    if (other) brandRows.push([t("gOther"), other]);
+    $("gBrands").innerHTML = bars(brandRows);
+    const lc = {};
+    cars.forEach(c => { const l = c.type === "Outro" ? t("tOther") : (c.type || "Mainline"); lc[l] = (lc[l]||0) + qtyOf(c); });
+    $("gLines").innerHTML = bars(Object.entries(lc).sort((a,b)=>b[1]-a[1]));
+  }
+  const openGarage = () => { closeAll(); renderGarage(); const m = $("mascot"); m.classList.remove("play"); void m.offsetWidth; m.classList.add("play"); $("scrim").hidden=false; $("garage").hidden=false; $("garage").scrollTop=0; $("garageClose").focus({ preventScroll: true }); };
+  $("garageBtn").addEventListener("click", openGarage);
+  $("garageTile").addEventListener("click", openGarage);
+  $("garageClose").addEventListener("click", closeAll);
+  $("gHighlights").addEventListener("click", e => { const b=e.target.closest(".gItem"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
+
+  function closeAll(){ hideSugg(); ["sheet","about","pinSheet","garage"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
+  $("aboutBtn").addEventListener("click", ()=>{ closeAll(); $("backupBox").hidden = !canEdit; $("backupRes").hidden = true; $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus({ preventScroll: true }); });
   $("backupBtn").addEventListener("click", async () => {
     if (!canEdit) return;
     const btn = $("backupBtn"), res = $("backupRes");
