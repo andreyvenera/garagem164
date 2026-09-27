@@ -48,7 +48,32 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.45;padding-inline:16px;padding-block:env(safe-area-inset-top,0px) 120px;min-height:100vh}
 img{max-width:100%}
 [hidden]{display:none!important}
-.lockBtn[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.userPill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;max-width:130px}
+.avatar{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-family:var(--body);font-weight:700;font-size:11.5px}
+.userName{font-family:var(--body);font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.viewBar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;padding:8px 12px;border-radius:10px;border:1px dashed var(--gold);background:color-mix(in srgb,var(--gold) 10%,var(--surface));font-size:13px}
+.viewBar span{flex:1;min-width:0;overflow-wrap:anywhere}
+.viewBar .link{flex:none;white-space:nowrap}
+@media (max-width:440px){.userPill .userName{display:none}.userPill{padding:3px}.prefs{gap:5px}}
+.viewBar b{color:var(--gold)}
+.userList{display:grid;gap:8px;margin-bottom:16px}
+.userRow{display:flex;align-items:center;gap:10px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);cursor:pointer;text-align:left;color:var(--text)}
+.userRow:hover{border-color:var(--muted)}
+.userRow[aria-current="true"]{border-color:var(--accent)}
+.userRow .avatar{width:32px;height:32px;font-size:14px}
+.userRow .uTxt{display:grid;min-width:0}
+.userRow .uTxt b{font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.userRow .uTxt small{font-size:12px;color:var(--muted)}
+.userRow .uN{margin-left:auto;flex:none;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.authView{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;display:grid;place-items:center;padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.authBox{width:100%;max-width:400px;display:grid;gap:14px}
+.authBox .eyebrow{margin:0;font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase}
+.authTitle{margin:0;font-family:var(--display);font-style:italic;font-weight:800;font-size:clamp(44px,13vw,64px);line-height:.9;text-transform:uppercase}
+.authBox .sub{margin:0;color:var(--muted)}
+.authForm{display:grid;gap:10px}
+.authForm .btn{flex:none;width:100%}
+.hint2{margin:0;font-size:12px;color:var(--muted)}
+.authPrefs{display:flex;justify-content:center}
 .pinBox{display:grid;gap:10px}
 .pinBox input{font-family:var(--mono);font-size:22px;letter-spacing:.3em;text-align:center;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
 .about p.sub{margin:0 0 14px;color:var(--muted);font-size:14px}
@@ -304,9 +329,13 @@ form{display:grid;gap:10px}
       <div class="prefs">
         <button class="pill" id="langBtn" type="button"></button>
         <button class="pill" id="themeBtn" type="button"></button>
-        <button class="pill lockBtn" id="lockBtn" type="button" aria-pressed="false"></button>
+        <button class="pill userPill" id="userBtn" type="button"><span class="avatar" id="userAvatar"></span><span class="userName" id="userName"></span></button>
         <button class="aboutPill" id="aboutBtn" type="button"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5"/><circle cx="10" cy="6" r=".6" fill="currentColor"/></svg><span data-i18n="about"></span></button>
       </div>
+    </div>
+    <div class="viewBar" id="viewBar" hidden>
+      <span id="viewText"></span>
+      <button type="button" class="link" id="backMine" data-i18n="backToMine"></button>
     </div>
     <button class="stats" id="garageBtn" type="button" data-i18n-aria="garageOpen">
       <span class="stat"><b id="sTotal">0</b><small data-i18n="cars"></small></span>
@@ -318,7 +347,7 @@ form{display:grid;gap:10px}
           <path d="M3 13.5 16 5l13 8.5"/><path d="M6 12v15h20V12"/><path d="M10 27V16h12v11"/><path d="M10 19.5h12M10 23h12"/>
         </svg>
       </span>
-      <span class="gtText"><b data-i18n="garage"></b><small data-i18n="garageSub"></small></span>
+      <span class="gtText"><b id="gtLabel" data-i18n="garage"></b><small data-i18n="garageSub"></small></span>
       <span class="gtGo" aria-hidden="true">›</span>
     </button>
     <div class="tools">
@@ -344,6 +373,29 @@ form{display:grid;gap:10px}
   </div>
   <button class="fab" id="add" type="button" data-i18n="add"></button>
 </footer>
+
+<div class="authView" id="authView" hidden>
+  <div class="authBox">
+    <p class="eyebrow" data-i18n="authEyebrow"></p>
+    <h1 class="authTitle"><span data-i18n="brand"></span> <span class="acc">1:64</span></h1>
+    <p class="sub" data-i18n="authLead"></p>
+    <div class="seg" role="tablist">
+      <button type="button" role="tab" id="tabIn" aria-pressed="true" data-i18n="signIn"></button>
+      <button type="button" role="tab" id="tabUp" aria-pressed="false" data-i18n="signUp"></button>
+    </div>
+    <form class="authForm" id="authForm" autocomplete="on">
+      <label class="field" id="fNameWrap" hidden><span data-i18n="displayName"></span><input id="aName" autocomplete="name" maxlength="40"></label>
+      <label class="field"><span data-i18n="username"></span><input id="aUser" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" required></label>
+      <label class="field"><span data-i18n="password"></span><input id="aPass" type="password" autocomplete="current-password" required></label>
+      <label class="field" id="fPass2Wrap" hidden><span data-i18n="password2"></span><input id="aPass2" type="password" autocomplete="new-password"></label>
+      <label class="field" id="fPinWrap" hidden><span data-i18n="ownerPin"></span><input id="aPin" type="password" inputmode="numeric" autocomplete="off"></label>
+      <p class="hint2" id="authHint" hidden data-i18n="userRules"></p>
+      <div class="msg" id="authMsg"></div>
+      <button class="btn primary" type="submit" id="authOk" data-i18n="signIn"></button>
+    </form>
+    <div class="authPrefs"><button class="pill" id="authLang" type="button"></button></div>
+  </div>
+</div>
 
 <div class="scrim" id="scrim" hidden></div>
 
@@ -402,18 +454,17 @@ form{display:grid;gap:10px}
   </form>
 </section>
 
-<section class="sheet about" id="pinSheet" hidden aria-modal="true" role="dialog" aria-labelledby="pinTitle">
+<section class="sheet about" id="acctSheet" hidden aria-modal="true" role="dialog" aria-labelledby="acctTitle">
   <div class="grab"></div>
-  <h2 id="pinTitle" data-i18n="pinTitle"></h2>
-  <p class="sub" data-i18n="pinText"></p>
-  <form class="pinBox" id="pinForm">
-    <input id="pinInput" type="password" inputmode="numeric" autocomplete="current-password" data-i18n-aria="pinTitle">
-    <div class="msg" id="pinMsg"></div>
-    <div class="actions">
-      <button class="btn" type="button" id="pinCancel" data-i18n="close"></button>
-      <button class="btn primary" type="submit" id="pinOk" data-i18n="unlock"></button>
-    </div>
-  </form>
+  <p class="eyebrow" data-i18n="acctEyebrow"></p>
+  <h2 id="acctTitle"></h2>
+  <p class="sub" id="acctSub"></p>
+  <h3 class="gHead" data-i18n="garages"></h3>
+  <div class="userList" id="userList"></div>
+  <div class="actions">
+    <button class="btn danger" type="button" id="signOutBtn" data-i18n="signOut"></button>
+    <button class="btn" type="button" id="acctClose" data-i18n="close"></button>
+  </div>
 </section>
 
 <section class="sheet about garage" id="garage" hidden aria-modal="true" role="dialog" aria-labelledby="garageTitle">
@@ -421,7 +472,7 @@ form{display:grid;gap:10px}
   <div class="gTop">
     <div class="gTitle">
       <p class="eyebrow" data-i18n="garageEyebrow"></p>
-      <h2 id="garageTitle"><span data-i18n="garage"></span></h2>
+      <h2 id="garageTitle"><span id="garageTitleText" data-i18n="garage"></span></h2>
     </div>
     <div class="mascot" id="mascot" aria-hidden="true">
       <span class="bubble" id="gBubble"></span>
@@ -483,7 +534,15 @@ form{display:grid;gap:10px}
       lockOn:"Bloquear edição", lockOff:"Desbloquear edição", pinTitle:"Modo de edição", pinText:"Digite o PIN para cadastrar, editar e excluir carrinhos neste aparelho.",
       unlock:"Entrar", pinWrong:"PIN incorreto.", pinCheck:"Conferindo", unlocked:"Edição liberada", locked:"Edição bloqueada",
       dupTitle:"Já está na garagem?", dupOne:"1 parecido", dupMany:"{n} parecidos", dupCode:"mesmo código", dupName:"mesmo nome", dupLike:"parecido", mine:"na garagem", mineN:"{n} na garagem",
-      tagline:"Feito para a coleção. Pensado para os colecionadores. 🏁", garage:"Minha garagem", garageSub:"Resumo, destaques e marcas", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
+      tagline:"Feito para a coleção. Pensado para os colecionadores. 🏁",
+      authEyebrow:"Coleção de Hot Wheels", authLead:"Entre na sua conta ou crie uma para montar a sua garagem.", signIn:"Entrar", signUp:"Criar conta", signingIn:"Entrando", creating:"Criando conta",
+      username:"Usuário", displayName:"Seu nome", password:"Senha", password2:"Confirmar senha", ownerPin:"PIN antigo da coleção",
+      userRules:"Usuário com 3 a 20 caracteres, só letras minúsculas, números, ponto ou sublinhado. Senha com pelo menos 6 caracteres.",
+      LOGIN_FAIL:"Usuário ou senha incorretos.", USER_EXISTS:"Esse usuário já existe. Escolha outro.", USER_INVALID:"Usuário inválido. Use de 3 a 20 letras minúsculas, números, ponto ou sublinhado.",
+      PASS_SHORT:"A senha precisa ter pelo menos 6 caracteres.", PASS_MISMATCH:"As senhas não conferem.", OWNER_PIN:"Esse é o usuário da coleção original. Digite o PIN antigo para criar a conta.",
+      netFail:"Não foi possível conectar. Confira a internet e tente de novo.", welcome:"Bem-vindo, {name}!", signedOut:"Você saiu da conta", sessionLost:"Sua sessão expirou. Entre de novo.",
+      acctEyebrow:"Sua conta", signedAs:"Conectado como @{u}", garages:"Garagens", you:"você", nCars:"{n} carrinhos", oneCar:"1 carrinho", signOut:"Sair da conta",
+      viewing:"Vendo a garagem de {name}", backToMine:"Voltar para a minha", garageOf:"Garagem de {name}", forbidden:"Só o dono pode alterar esse carrinho.", garage:"Minha garagem", garageSub:"Resumo, destaques e marcas", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
       gHighlights:"Destaques", gTop:"Mais caro", gLow:"Mais barato", gLast:"Último adicionado", gBrands:"Por marca", gLines:"Por linha", gOther:"Originais e outras", gNone:"Cadastre carrinhos para ver os detalhes aqui.", gWow:"{n} carrinhos?!", gWowOne:"Só 1 carrinho?!", gWowZero:"Garagem vazia?!", gNoPrice:"sem preço",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garagem 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
@@ -507,7 +566,15 @@ form{display:grid;gap:10px}
       lockOn:"Lock editing", lockOff:"Unlock editing", pinTitle:"Edit mode", pinText:"Enter the PIN to add, edit and delete cars on this device.",
       unlock:"Unlock", pinWrong:"Wrong PIN.", pinCheck:"Checking", unlocked:"Editing unlocked", locked:"Editing locked",
       dupTitle:"Already in your garage?", dupOne:"1 similar", dupMany:"{n} similar", dupCode:"same code", dupName:"same name", dupLike:"similar", mine:"in garage", mineN:"{n} in garage",
-      tagline:"Built for the collection. Made for the collectors. 🏁", garage:"My garage", garageSub:"Summary, highlights and makes", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
+      tagline:"Built for the collection. Made for the collectors. 🏁",
+      authEyebrow:"Hot Wheels collection", authLead:"Sign in to your account or create one to build your garage.", signIn:"Sign in", signUp:"Create account", signingIn:"Signing in", creating:"Creating account",
+      username:"Username", displayName:"Your name", password:"Password", password2:"Confirm password", ownerPin:"Old collection PIN",
+      userRules:"Username with 3 to 20 characters, only lowercase letters, numbers, dot or underscore. Password with at least 6 characters.",
+      LOGIN_FAIL:"Wrong username or password.", USER_EXISTS:"This username is taken. Pick another one.", USER_INVALID:"Invalid username. Use 3 to 20 lowercase letters, numbers, dot or underscore.",
+      PASS_SHORT:"The password needs at least 6 characters.", PASS_MISMATCH:"Passwords don't match.", OWNER_PIN:"This is the original collection's user. Enter the old PIN to create the account.",
+      netFail:"Couldn't connect. Check your connection and try again.", welcome:"Welcome, {name}!", signedOut:"You signed out", sessionLost:"Your session expired. Sign in again.",
+      acctEyebrow:"Your account", signedAs:"Signed in as @{u}", garages:"Garages", you:"you", nCars:"{n} cars", oneCar:"1 car", signOut:"Sign out",
+      viewing:"Viewing {name}'s garage", backToMine:"Back to mine", garageOf:"{name}'s garage", forbidden:"Only the owner can change this car.", garage:"My garage", garageSub:"Summary, highlights and makes", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
       gHighlights:"Highlights", gTop:"Most expensive", gLow:"Cheapest", gLast:"Latest added", gBrands:"By make", gLines:"By line", gOther:"Originals and others", gNone:"Add cars to see the details here.", gWow:"{n} cars?!", gWowOne:"Just 1 car?!", gWowZero:"Empty garage?!", gNoPrice:"no price",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garagem 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
@@ -524,17 +591,18 @@ form{display:grid;gap:10px}
   const API = "https://script.google.com/macros/s/AKfycbx0PZ3sMJ4taUp7i7de4tCTT9kwxhe7kgpxUBsabmwuQL946nbCAHf6xjOwTAcYe4pPVw/exec";
   const hasServer = true;
   async function run(fn, ...args){
-    const r = fn === "listCars"
-      ? await fetch(API + "?action=list&t=" + Date.now(), { cache: "no-store" })
-      : await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: fn, args }) });
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: fn, args }) });
     if (!r.ok) throw new Error("HTTP " + r.status);
     const j = await r.json();
     if (!j.ok) throw new Error(j.error || "erro");
     return j.data;
   }
-  const isPinError = e => /PIN/.test(String(e && (e.message || e)));
+  const errCode = e => String(e && (e.message || e));
+  const isAuthError = e => errCode(e) === "AUTH";
 
-  let cars = [], filter = "all", mode = "loading", pin = store.get("garagem164.pin") || "", canEdit = false;
+  let session = null; try { session = JSON.parse(store.get("garagem164.session") || "null"); } catch (e) {}
+  let viewing = session ? session.user.username : "", viewingName = session ? session.user.name : "", userDir = [];
+  let cars = [], filter = "all", mode = "loading", canEdit = false;
   let editing = null, pendingPhoto = null, delArmed = false, busy = 0;
   const localPreview = {}; // fotos recém enviadas, mostradas até o Drive gerar a miniatura
 
@@ -637,39 +705,104 @@ form{display:grid;gap:10px}
   }
   $("grid").addEventListener("click", e => { const b=e.target.closest(".car"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
 
-  /* modo e edição */
+  /* modo, conta e garagem em exibição */
+  const initial = n => (String(n||"?").trim()[0] || "?").toUpperCase();
+  const isMine = () => !!session && viewing === session.user.username;
   function setMode(){
     const k = busy ? "mSaving" : mode==="loading" ? "mConn" : mode==="off" ? "mOff" : !canEdit ? "mRead" : "mSync";
     $("mode").textContent = t(k);
     $("add").hidden = !canEdit;
   }
-  function paintLock(){
-    $("lockBtn").textContent = canEdit ? "🔓" : "🔒";
-    $("lockBtn").setAttribute("aria-pressed", String(canEdit));
-    const l = canEdit ? t("lockOn") : t("lockOff");
-    $("lockBtn").setAttribute("aria-label", l); $("lockBtn").title = l;
+  function paintUser(){
+    const u = session && session.user;
+    $("userBtn").hidden = !u;
+    if (!u) return;
+    $("userAvatar").textContent = initial(u.name);
+    $("userName").textContent = u.name;
+    $("userBtn").setAttribute("aria-label", t("acctEyebrow")); $("userBtn").title = t("signedAs").replace("{u}", u.username);
   }
-  function setEdit(on){ canEdit = on; paintLock(); setMode(); render(); }
-  function lostPin(){ pin=""; store.del("garagem164.pin"); setEdit(false); }
+  function paintView(){
+    const mine = isMine();
+    canEdit = mine;
+    $("viewBar").hidden = mine || !session;
+    if (!mine) $("viewText").innerHTML = esc(t("viewing")).replace("{name}", "<b>" + esc(viewingName) + "</b>");
+    const label = mine ? t("garage") : t("garageOf").replace("{name}", viewingName);
+    $("gtLabel").textContent = label; $("garageTitleText").textContent = label;
+    setMode();
+  }
+  function paintLock(){ paintUser(); paintView(); }
+  function setEdit(){ paintView(); render(); }
+  function saveSession(s){ session = s; if (s) store.set("garagem164.session", JSON.stringify(s)); else store.del("garagem164.session"); }
+  function signOut(k){
+    saveSession(null); viewing = ""; viewingName = ""; cars = []; loaded = false; seen = null; lastTotal = null;
+    closeAll(); paintLock(); render(); authMode = "in"; showAuth(); if (k) toast(k);
+  }
+  const lostPin = () => signOut("sessionLost");
+  async function switchGarage(username, name){
+    viewing = username; viewingName = name || username;
+    cars = readCache(); loaded = cars !== null; if (!loaded) cars = []; seen = null; lastTotal = null;
+    closeAll(); paintView(); render(true); await load();
+  }
+  $("backMine").addEventListener("click", () => session && switchGarage(session.user.username, session.user.name));
 
-  function openPin(){
-    closeAll(); $("pinInput").value=""; $("pinMsg").textContent="";
-    $("scrim").hidden=false; $("pinSheet").hidden=false; setTimeout(()=>$("pinInput").focus(),60);
+  async function openAcct(){
+    if (!session) return;
+    closeAll();
+    $("acctTitle").textContent = session.user.name;
+    $("acctSub").textContent = t("signedAs").replace("{u}", session.user.username);
+    renderUsers();
+    $("scrim").hidden = false; $("acctSheet").hidden = false; $("acctSheet").scrollTop = 0;
+    try { userDir = await run("users", session.token); renderUsers(); }
+    catch (err) { if (isAuthError(err)) lostPin(); }
   }
-  $("lockBtn").addEventListener("click", () => {
-    if (canEdit) { lostPin(); toast("locked"); } else openPin();
-  });
-  $("pinCancel").addEventListener("click", closeAll);
-  $("pinForm").addEventListener("submit", async e => {
+  function renderUsers(){
+    const me = session && session.user.username;
+    const list = userDir.length ? userDir : (session ? [{ username: me, name: session.user.name, count: cars.length }] : []);
+    $("userList").innerHTML = list.map(u => `<button type="button" class="userRow" data-u="${esc(u.username)}" data-n="${esc(u.name)}" aria-current="${u.username===viewing}">
+      <span class="avatar">${esc(initial(u.name))}</span>
+      <span class="uTxt"><b>${esc(u.name)}${u.username===me?` <small>(${esc(t("you"))})</small>`:""}</b><small>@${esc(u.username)}</small></span>
+      <span class="uN">${esc(u.count===1 ? t("oneCar") : t("nCars").replace("{n}", u.count))}</span></button>`).join("");
+  }
+  $("userBtn").addEventListener("click", openAcct);
+  $("acctClose").addEventListener("click", closeAll);
+  $("signOutBtn").addEventListener("click", () => signOut("signedOut"));
+  $("userList").addEventListener("click", e => { const b = e.target.closest(".userRow"); if (b) switchGarage(b.dataset.u, b.dataset.n); });
+
+  /* entrar e criar conta */
+  let authMode = "in";
+  function setAuthMode(m){
+    authMode = m;
+    $("tabIn").setAttribute("aria-pressed", String(m === "in")); $("tabUp").setAttribute("aria-pressed", String(m === "up"));
+    $("fNameWrap").hidden = m !== "up"; $("fPass2Wrap").hidden = m !== "up"; $("authHint").hidden = m !== "up";
+    if (m === "in") $("fPinWrap").hidden = true;
+    $("aPass").setAttribute("autocomplete", m === "up" ? "new-password" : "current-password");
+    $("authOk").textContent = t(m === "up" ? "signUp" : "signIn"); $("authMsg").textContent = "";
+  }
+  function showAuth(){ $("authView").hidden = false; $("authLang").textContent = lang==="pt" ? "EN" : "PT"; setAuthMode(authMode); }
+  $("tabIn").addEventListener("click", () => setAuthMode("in"));
+  $("tabUp").addEventListener("click", () => setAuthMode("up"));
+  $("authLang").addEventListener("click", () => { lang = lang==="pt" ? "en" : "pt"; applyLang(); showAuth(); });
+  $("authForm").addEventListener("submit", async e => {
     e.preventDefault();
-    const p = $("pinInput").value.trim(); if (!p) return;
-    $("pinOk").disabled = true; $("pinOk").textContent = t("pinCheck");
+    const u = $("aUser").value.trim().toLowerCase().replace(/^@/, ""), p = $("aPass").value;
+    const say = k => { $("authMsg").textContent = t(k); };
+    if (authMode === "up" && p !== $("aPass2").value) return say("PASS_MISMATCH");
+    $("authOk").disabled = true; $("authOk").textContent = t(authMode === "up" ? "creating" : "signingIn"); $("authMsg").textContent = "";
     try {
-      const ok = await run("checkPin", p);
-      if (ok) { pin = p; store.set("garagem164.pin", p); setEdit(true); closeAll(); toast("unlocked"); }
-      else { $("pinMsg").textContent = t("pinWrong"); $("pinInput").select(); }
-    } catch(err) { $("pinMsg").textContent = t("saveFail"); }
-    finally { $("pinOk").disabled = false; $("pinOk").textContent = t("unlock"); }
+      const s = authMode === "up"
+        ? await run("register", u, $("aName").value.trim(), p, $("aPin").value.trim())
+        : await run("login", u, p);
+      saveSession(s); $("aPass").value = ""; $("aPass2").value = ""; $("aPin").value = "";
+      $("authView").hidden = true;
+      viewing = s.user.username; viewingName = s.user.name; loaded = false; seen = null; lastTotal = null;
+      cars = readCache(); if (cars === null) cars = []; else loaded = true;
+      paintLock(); render(); toast("welcome"); $("toast").textContent = t("welcome").replace("{name}", s.user.name);
+      load();
+    } catch (err) {
+      const c = errCode(err);
+      if (c === "OWNER_PIN") $("fPinWrap").hidden = false;
+      say(T.pt[c] ? c : "netFail");
+    } finally { $("authOk").disabled = false; $("authOk").textContent = t(authMode === "up" ? "signUp" : "signIn"); }
   });
 
   /* repetidos */
@@ -866,23 +999,23 @@ form{display:grid;gap:10px}
   $("garageClose").addEventListener("click", closeAll);
   $("gHighlights").addEventListener("click", e => { const b=e.target.closest(".gItem"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
 
-  function closeAll(){ hideSugg(); ["sheet","about","pinSheet","garage"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
+  function closeAll(){ hideSugg(); ["sheet","about","acctSheet","garage"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
   $("aboutBtn").addEventListener("click", ()=>{ closeAll(); $("backupBox").hidden = !canEdit; $("backupRes").hidden = true; $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus({ preventScroll: true }); });
   $("backupBtn").addEventListener("click", async () => {
     if (!canEdit) return;
     const btn = $("backupBtn"), res = $("backupRes");
     btn.disabled = true; btn.textContent = t("backupWorking"); res.hidden = true;
     try {
-      const r = await run("backupCollection", pin);
+      const r = await run("backupCollection", session.token);
       res.innerHTML = `${esc(t("backupDone").replace("{n}", r.count))} <a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(t("backupOpen"))}</a>`;
       res.hidden = false;
     } catch (err) {
-      if (isPinError(err)) { lostPin(); $("backupBox").hidden = true; }
-      res.textContent = t(isPinError(err) ? "pinLost" : "backupFail"); res.hidden = false;
+      if (isAuthError(err)) { lostPin(); return; }
+      res.textContent = t("backupFail"); res.hidden = false;
     } finally { btn.disabled = false; btn.textContent = t("backupBtn"); }
   });
   $("aboutClose").addEventListener("click", closeAll);
-  $("add").addEventListener("click", ()=> canEdit ? openSheet(null) : openPin());
+  $("add").addEventListener("click", ()=> { if (canEdit) openSheet(null); });
   $("cancel").addEventListener("click", closeAll);
   $("scrim").addEventListener("click", closeAll);
   document.addEventListener("keydown", e => { if(e.key==="Escape" && !$("scrim").hidden) closeAll(); });
@@ -905,7 +1038,9 @@ form{display:grid;gap:10px}
   $("photoInput").addEventListener("change", onPhoto);
   $("camInput").addEventListener("change", onPhoto);
 
-  function saveCache(){ try{ localStorage.setItem("garagem164.cache", JSON.stringify(cars)); }catch(e){} }
+  const cacheKey = () => "garagem164.cache." + viewing;
+  function saveCache(){ if (!viewing) return; try{ localStorage.setItem(cacheKey(), JSON.stringify(cars)); }catch(e){} }
+  function readCache(){ try{ const c = JSON.parse(localStorage.getItem(cacheKey()) || "null"); return Array.isArray(c) ? c : null; }catch(e){ return null; } }
 
   $("del").addEventListener("click", async () => {
     if(!editing || !canEdit) return;
@@ -913,11 +1048,11 @@ form{display:grid;gap:10px}
     const c = editing;
     $("del").disabled = true; busy++; setMode();
     try{
-      await run("deleteCar", pin, c.id);
+      await run("deleteCar", session.token, c.id);
       cars = cars.filter(x=>x.id!==c.id); saveCache(); render();
       closeAll(); toast("deleted");
     }catch(err){
-      if (isPinError(err)) { lostPin(); msg("pinLost"); } else msg("delFail");
+      if (isAuthError(err)) lostPin(); else msg(errCode(err)==="FORBIDDEN" ? "forbidden" : "delFail");
     }finally{ $("del").disabled = false; busy--; setMode(); }
   });
 
@@ -933,29 +1068,33 @@ form{display:grid;gap:10px}
     const was = !!editing, photo = pendingPhoto;
     $("save").disabled=true; $("save").textContent=t("saving"); busy++; setMode();
     try{
-      const saved = await run("saveCar", pin, data, photo ? photo.split(",")[1] : "");
+      const saved = await run("saveCar", session.token, data, photo ? photo.split(",")[1] : "");
       if (photo && saved.photoId) localPreview[saved.photoId] = photo;
       const i = cars.findIndex(x=>x.id===saved.id);
       if (i>=0) cars[i] = saved; else cars.push(saved);
       saveCache(); closeAll(); render(); toast(was?"savedEdit":"added");
     }catch(err){
-      if (isPinError(err)) { lostPin(); msg("pinLost"); } else msg("saveFail");
+      if (isAuthError(err)) lostPin(); else msg(errCode(err)==="FORBIDDEN" ? "forbidden" : "saveFail");
     }finally{ $("save").disabled=false; $("save").textContent=t("save"); busy--; setMode(); }
   });
 
   /* carregar */
   async function load(){
+    if (!session) { splashReady(); showAuth(); return; }
+    const who = viewing;
     try{
-      const list = await run("listCars");
+      const list = await run("listCars", session.token, who);
+      if (who !== viewing) return;
       cars = Array.isArray(list) ? list : [];
       mode = "ready"; loaded = true; saveCache();
     }catch(err){
+      if (isAuthError(err)) { splashReady(); lostPin(); return; }
       mode = "off";
       if (!loaded) { loaded = true; }
     }
     setMode(); render(!seen); splashReady();
   }
-  try{ const c = JSON.parse(localStorage.getItem("garagem164.cache")||"null"); if (Array.isArray(c) && (!c.length || "photoId" in c[0])) { cars = c; loaded = true; } }catch(e){}
+  if (session) { const c = readCache(); if (c) { cars = c; loaded = true; } }
 
   /* abertura */
   const t0 = Date.now();
@@ -972,11 +1111,10 @@ form{display:grid;gap:10px}
   setTimeout(splashReady, 12000);
 
   applyLang();
-  if (pin) run("checkPin", pin).then(ok => ok ? setEdit(true) : lostPin()).catch(()=>{});
   load();
   let lastSync = Date.now();
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState==="visible" && Date.now()-lastSync > 15000 && !busy) { lastSync = Date.now(); load(); }
+    if (document.visibilityState==="visible" && session && Date.now()-lastSync > 15000 && !busy) { lastSync = Date.now(); load(); }
   });
 })();
 </script>
