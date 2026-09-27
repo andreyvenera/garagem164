@@ -66,6 +66,10 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .mode{font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .tag{margin:0;font-size:11px;color:var(--muted);line-height:1.3}
 .topline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.aboutPill{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:5px 12px 5px 9px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface));color:var(--text);font-weight:700;font-size:13px}
+.aboutPill svg{color:var(--accent)}
+.aboutPill:hover{background:color-mix(in srgb,var(--accent) 30%,var(--surface))}
 .link{border:0;background:none;color:var(--accent);font-weight:700;font-size:13px;padding:4px 0;cursor:pointer}
 .prefs{display:flex;align-items:center;gap:6px}
 .pill{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:999px;font-family:var(--mono);font-size:11.5px;padding:4px 10px;cursor:pointer;min-height:28px}
@@ -301,7 +305,7 @@ form{display:grid;gap:10px}
         <button class="pill" id="langBtn" type="button"></button>
         <button class="pill" id="themeBtn" type="button"></button>
         <button class="pill lockBtn" id="lockBtn" type="button" aria-pressed="false"></button>
-        <button class="link" id="aboutBtn" type="button" data-i18n="about"></button>
+        <button class="aboutPill" id="aboutBtn" type="button"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5"/><circle cx="10" cy="6" r=".6" fill="currentColor"/></svg><span data-i18n="about"></span></button>
       </div>
     </div>
     <button class="stats" id="garageBtn" type="button" data-i18n-aria="garageOpen">
@@ -336,7 +340,7 @@ form{display:grid;gap:10px}
 <footer class="bar">
   <div class="brand">
     <h1><span data-i18n="brand"></span> <span class="acc">1:64</span></h1>
-    <p class="tag">Built for the collection. Made for the collectors. 🏁</p>
+    <p class="tag" data-i18n="tagline"></p>
   </div>
   <button class="fab" id="add" type="button" data-i18n="add"></button>
 </footer>
@@ -479,7 +483,7 @@ form{display:grid;gap:10px}
       lockOn:"Bloquear edição", lockOff:"Desbloquear edição", pinTitle:"Modo de edição", pinText:"Digite o PIN para cadastrar, editar e excluir carrinhos neste aparelho.",
       unlock:"Entrar", pinWrong:"PIN incorreto.", pinCheck:"Conferindo", unlocked:"Edição liberada", locked:"Edição bloqueada",
       dupTitle:"Já está na garagem?", dupOne:"1 parecido", dupMany:"{n} parecidos", dupCode:"mesmo código", dupName:"mesmo nome", dupLike:"parecido", mine:"na garagem", mineN:"{n} na garagem",
-      garage:"Minha garagem", garageSub:"Resumo, destaques e marcas", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
+      tagline:"Feito para a coleção. Pensado para os colecionadores. 🏁", garage:"Minha garagem", garageSub:"Resumo, destaques e marcas", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
       gHighlights:"Destaques", gTop:"Mais caro", gLow:"Mais barato", gLast:"Último adicionado", gBrands:"Por marca", gLines:"Por linha", gOther:"Originais e outras", gNone:"Cadastre carrinhos para ver os detalhes aqui.", gWow:"{n} carrinhos?!", gWowOne:"Só 1 carrinho?!", gWowZero:"Garagem vazia?!", gNoPrice:"sem preço",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garagem 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
@@ -503,7 +507,7 @@ form{display:grid;gap:10px}
       lockOn:"Lock editing", lockOff:"Unlock editing", pinTitle:"Edit mode", pinText:"Enter the PIN to add, edit and delete cars on this device.",
       unlock:"Unlock", pinWrong:"Wrong PIN.", pinCheck:"Checking", unlocked:"Editing unlocked", locked:"Editing locked",
       dupTitle:"Already in your garage?", dupOne:"1 similar", dupMany:"{n} similar", dupCode:"same code", dupName:"same name", dupLike:"similar", mine:"in garage", mineN:"{n} in garage",
-      garage:"My garage", garageSub:"Summary, highlights and makes", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
+      tagline:"Built for the collection. Made for the collectors. 🏁", garage:"My garage", garageSub:"Summary, highlights and makes", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
       gHighlights:"Highlights", gTop:"Most expensive", gLow:"Cheapest", gLast:"Latest added", gBrands:"By make", gLines:"By line", gOther:"Originals and others", gNone:"Add cars to see the details here.", gWow:"{n} cars?!", gWowOne:"Just 1 car?!", gWowZero:"Empty garage?!", gNoPrice:"no price",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garagem 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
