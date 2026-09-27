@@ -574,6 +574,12 @@ form{display:grid;gap:10px}
   <p class="sub" id="acctSub"></p>
   <h3 class="gHead" data-i18n="garages"></h3>
   <div class="userList" id="userList"></div>
+  <div class="backup" id="backupBox" hidden>
+    <p class="eyebrow" data-i18n="backupT"></p>
+    <p class="sub" data-i18n="backupD"></p>
+    <button class="btn primary" type="button" id="backupBtn" data-i18n="backupBtn"></button>
+    <p class="backupRes" id="backupRes" hidden></p>
+  </div>
   <div class="actions">
     <button class="btn danger" type="button" id="signOutBtn" data-i18n="signOut"></button>
     <button class="btn" type="button" id="acctClose" data-i18n="close"></button>
@@ -634,12 +640,6 @@ form{display:grid;gap:10px}
         <p class="hwLegal" data-i18n="aboutLegal"></p>
       </div>
     </div>
-  </div>
-  <div class="backup" id="backupBox" hidden>
-    <p class="eyebrow" data-i18n="backupT"></p>
-    <p class="sub" data-i18n="backupD"></p>
-    <button class="btn primary" type="button" id="backupBtn" data-i18n="backupBtn"></button>
-    <p class="backupRes" id="backupRes" hidden></p>
   </div>
   <div class="actions"><button class="btn" type="button" id="aboutClose" data-i18n="close"></button></div>
 </section>
@@ -945,6 +945,7 @@ form{display:grid;gap:10px}
     $("acctTitle").textContent = session.user.name;
     $("acctSub").textContent = t("signedAs").replace("{u}", session.user.username);
     renderUsers();
+    $("backupBox").hidden = false; $("backupRes").hidden = true;
     $("scrim").hidden = false; $("acctSheet").hidden = false; $("acctSheet").scrollTop = 0;
     try { userDir = await run("users", session.token); renderUsers(); }
     catch (err) { if (isAuthError(err)) lostPin(); }
@@ -1247,7 +1248,7 @@ form{display:grid;gap:10px}
   $("gHighlights").addEventListener("click", e => { const b=e.target.closest(".gItem"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
 
   function closeAll(){ hideSugg(); ["sheet","about","acctSheet","garage","friends"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
-  $("aboutBtn").addEventListener("click", ()=>{ closeAll(); $("backupBox").hidden = !canEdit; $("backupRes").hidden = true; $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus({ preventScroll: true }); });
+  $("aboutBtn").addEventListener("click", ()=>{ closeAll(); $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus({ preventScroll: true }); });
   $("backupBtn").addEventListener("click", async () => {
     if (!canEdit) return;
     const btn = $("backupBtn"), res = $("backupRes");
@@ -1358,7 +1359,7 @@ form{display:grid;gap:10px}
   setTimeout(splashReady, 12000);
 
   /* atualização automática: se o GitHub tiver uma versão mais nova do que a aberta, recarrega uma vez */
-  const BUILD = "202609262150";
+  const BUILD = "202609262152";
   (async () => {
     try {
       const r = await fetch(location.pathname + "?build=" + Date.now(), { cache: "no-store" });
