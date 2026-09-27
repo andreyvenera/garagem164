@@ -91,6 +91,11 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .mode{font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .tag{margin:0;font-size:11px;color:var(--muted);line-height:1.3}
 .topline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+#langBtn,#authLang{display:inline-flex;align-items:center;gap:5px;padding:4px 9px}
+.flag{display:block;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.paidHint{display:block;min-height:1em;margin-top:4px;font-size:12px;color:var(--muted);text-transform:none;letter-spacing:0}
+.fxNote{margin:-10px 0 16px;font-size:11.5px;color:var(--muted)}
+.fxNote:empty{display:none}
 .aboutPill{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:5px 12px 5px 9px;border-radius:999px;cursor:pointer;
   border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface));color:var(--text);font-weight:700;font-size:13px}
 .aboutPill svg{color:var(--accent)}
@@ -485,7 +490,7 @@ form{display:grid;gap:10px}
         </div>
         <div class="row">
           <label class="field"><span data-i18n="fColor"></span><input id="fColor" type="color" value="#c8322a"></label>
-          <label class="field"><span data-i18n="fPaid"></span><input id="fPaid" type="number" inputmode="decimal" min="0" step="0.01" placeholder="1.25"></label>
+          <label class="field"><span data-i18n="fPaid"></span><input id="fPaid" type="number" inputmode="decimal" min="0" step="0.01" placeholder="1.25"><small class="paidHint" id="paidHint"></small></label>
         </div>
         <label class="field"><span data-i18n="fNotes"></span><textarea id="fNotes" rows="2" data-i18n-ph="notesPh"></textarea></label>
       </div>
@@ -537,6 +542,7 @@ form{display:grid;gap:10px}
     </div>
   </div>
   <div class="gGrid" id="gSummary"></div>
+  <p class="fxNote" id="gFx"></p>
   <h3 class="gHead" data-i18n="gHighlights"></h3>
   <div class="gHi" id="gHighlights"></div>
   <h3 class="gHead" data-i18n="gBrands"></h3>
@@ -602,7 +608,7 @@ form{display:grid;gap:10px}
       viewing:"Vendo a garagem de {name}", backToMine:"Voltar para a minha", garageOf:"Garagem de {name}", forbidden:"Só o dono pode alterar esse carrinho.", garage:"Minha garagem", garageSub:"Resumo e destaques",
       friends:"Amigos", friendsSub:"Coleções da galera", friendsEyebrow:"Comunidade", collectors:"Colecionadores", news:"Novidades", nCollectors:"colecionadores", allCars:"carrinhos no total",
       memberSince:"desde {d}", lastActive:"ativo {t}", noActivity:"sem atividade", added:"adicionou", fLoading:"Carregando os amigos", fFail:"Não foi possível carregar agora. Tente de novo.", fEmpty:"Nenhuma novidade ainda.",
-      premiumN:"{n} premium", youCap:"Você", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
+      premiumN:"{n} premium", youCap:"Você", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
       gHighlights:"Destaques", gTop:"Mais caro", gLow:"Mais barato", gLast:"Último adicionado", gBrands:"Por marca", gLines:"Por linha", gOther:"Originais e outras", gNone:"Cadastre carrinhos para ver os detalhes aqui.", gWow:"{n} carrinhos?!", gWowOne:"Só 1 carrinho?!", gWowZero:"Garagem vazia?!", gNoPrice:"sem preço",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garage 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
@@ -637,7 +643,7 @@ form{display:grid;gap:10px}
       viewing:"Viewing {name}'s garage", backToMine:"Back to mine", garageOf:"{name}'s garage", forbidden:"Only the owner can change this car.", garage:"My garage", garageSub:"Summary and highlights",
       friends:"Friends", friendsSub:"Everyone's collections", friendsEyebrow:"Community", collectors:"Collectors", news:"What's new", nCollectors:"collectors", allCars:"cars in total",
       memberSince:"since {d}", lastActive:"active {t}", noActivity:"no activity", added:"added", fLoading:"Loading friends", fFail:"Couldn't load right now. Try again.", fEmpty:"Nothing new yet.",
-      premiumN:"{n} premium", youCap:"You", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
+      premiumN:"{n} premium", youCap:"You", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
       gHighlights:"Highlights", gTop:"Most expensive", gLow:"Cheapest", gLast:"Latest added", gBrands:"By make", gLines:"By line", gOther:"Originals and others", gNone:"Add cars to see the details here.", gWow:"{n} cars?!", gWowOne:"Just 1 car?!", gWowZero:"Empty garage?!", gNoPrice:"no price",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garage 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
@@ -684,15 +690,45 @@ form{display:grid;gap:10px}
     document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
     document.querySelectorAll("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
     document.querySelectorAll("[data-i18n-aria]").forEach(el => el.setAttribute("aria-label", t(el.dataset.i18nAria)));
-    $("langBtn").textContent = lang==="pt" ? "EN" : "PT";
+    $("langBtn").innerHTML = langLabel();
     $("langBtn").setAttribute("aria-label", t("toLang")); $("langBtn").title = t("toLang");
     $("chips").innerHTML = FILTERS.map(([v,k]) => `<button class="chip" type="button" data-f="${v}" aria-pressed="${v===filter}">${k?t(k):v}</button>`).join("");
-    paintThemeBtn(); paintLock(); setMode(); render();
+    paintThemeBtn(); paintLock(); setMode(); render(); paintPaidHint();
     if (!$("sheet").hidden) refreshSheetTexts();
   }
   $("langBtn").addEventListener("click", () => { lang = lang==="pt" ? "en" : "pt"; applyLang(); });
 
-  const money = n => new Intl.NumberFormat(lang==="en"?"en-US":"pt-BR",{style:"currency",currency:"USD"}).format(n||0);
+  /* valores: guardados em dólar, mostrados em real no português usando a cotação do dia */
+  const FX_FALLBACK = 5.18;
+  let fx = (() => { try { const c = JSON.parse(localStorage.getItem("garagem164.fx") || "null"); if (c && c.rate > 0) return c; } catch (e) {} return { rate: FX_FALLBACK, date: "", at: 0 }; })();
+  const FLAG_US = '<svg class="flag" viewBox="0 0 19 13" width="19" height="13" aria-hidden="true"><rect width="19" height="13" fill="#fff"/><g fill="#B22234"><rect y="0" width="19" height="1"/><rect y="2" width="19" height="1"/><rect y="4" width="19" height="1"/><rect y="6" width="19" height="1"/><rect y="8" width="19" height="1"/><rect y="10" width="19" height="1"/><rect y="12" width="19" height="1"/></g><rect width="8" height="7" fill="#3C3B6E"/><g fill="#fff"><circle cx="1.6" cy="1.4" r=".45"/><circle cx="4" cy="1.4" r=".45"/><circle cx="6.4" cy="1.4" r=".45"/><circle cx="2.8" cy="3.4" r=".45"/><circle cx="5.2" cy="3.4" r=".45"/><circle cx="1.6" cy="5.4" r=".45"/><circle cx="4" cy="5.4" r=".45"/><circle cx="6.4" cy="5.4" r=".45"/></g></svg>';
+  const FLAG_BR = '<svg class="flag" viewBox="0 0 19 13" width="19" height="13" aria-hidden="true"><rect width="19" height="13" fill="#009B3A"/><path d="M9.5 1.4 17.4 6.5 9.5 11.6 1.6 6.5z" fill="#FEDF00"/><circle cx="9.5" cy="6.5" r="2.9" fill="#002776"/><path d="M6.8 6c1.8-.5 3.9-.3 5.5.6" stroke="#fff" stroke-width=".6" fill="none"/></svg>';
+  const langLabel = () => lang === "pt" ? FLAG_US + "<span>EN</span>" : FLAG_BR + "<span>PT</span>";
+  const money = n => lang === "en"
+    ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n || 0)
+    : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format((n || 0) * fx.rate);
+  async function refreshFx(){
+    if (Date.now() - (fx.at || 0) < 6 * 3600e3) return;
+    try {
+      const r = await fetch("https:" + "/" + "/api.frankfurter.dev/v1/latest?from=USD&to=BRL", { cache: "no-store" });
+      const j = await r.json();
+      if (j && j.rates && j.rates.BRL > 0) {
+        fx = { rate: j.rates.BRL, date: j.date || "", at: Date.now() };
+        try { localStorage.setItem("garagem164.fx", JSON.stringify(fx)); } catch (e) {}
+        render(); paintPaidHint(); if (!$("garage").hidden) renderGarage(); if (!$("friends").hidden) renderFriends();
+      }
+    } catch (e) {}
+  }
+  function fxNote(){
+    if (lang === "en") return "";
+    const d = fx.date ? new Date(fx.date + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : "";
+    return t("fxNote").replace("{r}", fx.rate.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })) + (d ? " · " + d : "");
+  }
+  function paintPaidHint(){
+    const el = $("paidHint"); if (!el) return;
+    const v = parseFloat($("fPaid").value);
+    el.textContent = lang === "pt" && v > 0 ? "≈ " + money(v) + " · " + fxNote() : "";
+  }
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const PH = "ph.webp";
   const carSvg = () => `<img class="ph" src="${PH}" alt="">`;
@@ -894,7 +930,7 @@ form{display:grid;gap:10px}
     $("aPass").setAttribute("autocomplete", m === "up" ? "new-password" : "current-password");
     $("authOk").textContent = t(m === "up" ? "signUp" : "signIn"); $("authMsg").textContent = "";
   }
-  function showAuth(){ $("authView").hidden = false; $("authLang").textContent = lang==="pt" ? "EN" : "PT"; setAuthMode(authMode); }
+  function showAuth(){ $("authView").hidden = false; $("authLang").innerHTML = langLabel(); setAuthMode(authMode); }
   $("tabIn").addEventListener("click", () => setAuthMode("in"));
   $("tabUp").addEventListener("click", () => setAuthMode("up"));
   $("authLang").addEventListener("click", () => { lang = lang==="pt" ? "en" : "pt"; applyLang(); showAuth(); });
@@ -1034,7 +1070,7 @@ form{display:grid;gap:10px}
     $("fName").value = c?.name||""; $("fSeries").value=c?.series||""; $("fNum").value=c?.num||"";
     $("fYear").value = c?.year||""; $("fCode").value=c?.code||""; $("fType").value=c?.type||"Mainline";
     $("fCond").value = c?.cond||"Na cartela"; $("fColor").value=c?.color||"#c8322a"; $("fQty").value=c?.qty||1;
-    $("fPaid").value = c?.paid ?? ""; $("fNotes").value=c?.notes||"";
+    $("fPaid").value = c?.paid ?? ""; $("fNotes").value=c?.notes||""; paintPaidHint();
     showPhoto(c ? photoUrl(c) : "");
     $("photoLabel").hidden = !canEdit; $("photoHint").textContent = "";
     $("del").hidden = !c || !canEdit; $("del").classList.remove("armed");
@@ -1086,6 +1122,7 @@ form{display:grid;gap:10px}
     const pricedQty = priced.reduce((s,c)=>s+qtyOf(c),0);
     const avg = pricedQty ? invested / pricedQty : 0;
     $("gBubble").textContent = total === 0 ? t("gWowZero") : total === 1 ? t("gWowOne") : t("gWow").replace("{n}", total);
+    $("gFx").textContent = fxNote();
     $("gSummary").innerHTML = [[total,"gCars"],[models,"gModels"],[money(invested),"gInvested"],[pricedQty?money(avg):"—","gAvg"]]
       .map(([v,k]) => `<div class="gStat"><b>${esc(v)}</b><small>${esc(t(k))}</small></div>`).join("");
     if (!cars.length) {
@@ -1227,7 +1264,9 @@ form{display:grid;gap:10px}
   setTimeout(splashReady, 12000);
 
   applyLang();
+  $("fPaid").addEventListener("input", paintPaidHint);
   load();
+  refreshFx();
   let lastSync = Date.now();
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState==="visible" && session && Date.now()-lastSync > 15000 && !busy) { lastSync = Date.now(); load(); }
