@@ -194,11 +194,13 @@ button.stats .stat{display:block}
 .gtText b{font-family:var(--display);font-style:italic;font-weight:800;font-size:clamp(17px,5vw,21px);line-height:1;text-transform:uppercase;letter-spacing:.02em}
 .gtText small{font-size:12.5px;color:var(--muted);margin-top:3px}
 .gtGo{position:absolute;top:10px;right:12px;font-size:24px;line-height:1;color:var(--accent);font-weight:700}
-.homeTile{grid-column:1/-1;grid-template-columns:auto 1fr;align-items:center;column-gap:12px;padding-right:40px;
+.tiles.three{grid-template-columns:repeat(3,1fr)}
+@media (max-width:560px){.tiles.three{grid-template-columns:1fr 1fr}.tiles.three .friendsTile{grid-column:1/-1}}
+.homeTile{
   border-color:color-mix(in srgb,var(--ok) 50%,var(--line));background:linear-gradient(100deg,color-mix(in srgb,var(--ok) 20%,var(--surface)),var(--surface) 70%)}
 .homeTile:hover{border-color:var(--ok)}
 .homeTile .gtIcon{background:var(--ok);color:#06140c}
-.homeTile .gtGo{top:50%;transform:translateY(-50%);color:var(--ok)}
+.homeTile .gtGo{color:var(--ok)}
 .friendsTile{border-color:color-mix(in srgb,var(--gold) 45%,var(--line));background:linear-gradient(100deg,color-mix(in srgb,var(--gold) 16%,var(--surface)),var(--surface) 70%)}
 .friendsTile:hover{border-color:var(--gold)}
 .friendsTile .gtIcon{background:var(--gold);color:var(--gold-ink)}
@@ -655,7 +657,7 @@ form{display:grid;gap:10px}
       viewing:"Vendo a garagem de {name}", backToMine:"Voltar para a minha", garageOf:"Garagem de {name}", forbidden:"Só o dono pode alterar esse carrinho.", garage:"Minha garagem", garageSub:"Resumo e destaques",
       friends:"Amigos", friendsSub:"Coleções da galera", friendsEyebrow:"Comunidade", collectors:"Colecionadores", news:"Novidades", nCollectors:"colecionadores", allCars:"carrinhos no total",
       memberSince:"desde {d}", lastActive:"ativo {t}", noActivity:"sem atividade", added:"adicionou", fLoading:"Carregando os amigos", fFail:"Não foi possível carregar agora. Tente de novo.", fEmpty:"Nenhuma novidade ainda.",
-      premiumN:"{n} premium", youCap:"Você", goingTo:"Indo para a garagem de {name}", goingHome:"De volta à sua garagem", homeTile:"Voltar para a minha garagem", homeSub:"Sua coleção, @{u}", warpWelcome:"Bem-vindo, {name}!", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
+      premiumN:"{n} premium", youCap:"Você", goingTo:"Indo para a garagem de {name}", goingHome:"De volta à sua garagem", homeTile:"Minha garagem", homeSub:"Voltar para a sua coleção", warpWelcome:"Bem-vindo, {name}!", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
       gHighlights:"Destaques", gTop:"Mais caro", gLow:"Mais barato", gLast:"Último adicionado", gBrands:"Por marca", gLines:"Por linha", gOther:"Originais e outras", gNone:"Cadastre carrinhos para ver os detalhes aqui.", gWow:"{n} carrinhos?!", gWowOne:"Só 1 carrinho?!", gWowZero:"Garagem vazia?!", gNoPrice:"sem preço",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garage 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
@@ -690,7 +692,7 @@ form{display:grid;gap:10px}
       viewing:"Viewing {name}'s garage", backToMine:"Back to mine", garageOf:"{name}'s garage", forbidden:"Only the owner can change this car.", garage:"My garage", garageSub:"Summary and highlights",
       friends:"Friends", friendsSub:"Everyone's collections", friendsEyebrow:"Community", collectors:"Collectors", news:"What's new", nCollectors:"collectors", allCars:"cars in total",
       memberSince:"since {d}", lastActive:"active {t}", noActivity:"no activity", added:"added", fLoading:"Loading friends", fFail:"Couldn't load right now. Try again.", fEmpty:"Nothing new yet.",
-      premiumN:"{n} premium", youCap:"You", goingTo:"Heading to {name}\'s garage", goingHome:"Back to your garage", homeTile:"Back to my garage", homeSub:"Your collection, @{u}", warpWelcome:"Welcome, {name}!", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
+      premiumN:"{n} premium", youCap:"You", goingTo:"Heading to {name}\'s garage", goingHome:"Back to your garage", homeTile:"My garage", homeSub:"Back to your collection", warpWelcome:"Welcome, {name}!", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
       gHighlights:"Highlights", gTop:"Most expensive", gLow:"Cheapest", gLast:"Latest added", gBrands:"By make", gLines:"By line", gOther:"Originals and others", gNone:"Add cars to see the details here.", gWow:"{n} cars?!", gWowOne:"Just 1 car?!", gWowZero:"Empty garage?!", gNoPrice:"no price",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garage 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
@@ -872,7 +874,8 @@ form{display:grid;gap:10px}
     canEdit = mine;
     $("viewBar").hidden = mine || !session;
     $("homeTile").hidden = mine || !session;
-    if (session) $("homeSub").textContent = t("homeSub").replace("{u}", session.user.username);
+    $("homeTile").parentElement.classList.toggle("three", !mine && !!session);
+    $("homeSub").textContent = t("homeSub");
     if (!mine) $("viewText").innerHTML = esc(t("viewing")).replace("{name}", "<b>" + esc(viewingName) + "</b>");
     const label = mine ? t("garage") : t("garageOf").replace("{name}", viewingName);
     $("gtLabel").textContent = label; $("garageTitleText").textContent = label;
