@@ -195,6 +195,16 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .catItem .ci img{width:100%;height:100%;object-fit:contain}
 .catItem span{font-size:12px;line-height:1.25;overflow-wrap:anywhere;color:var(--muted)}
 .catItem b{font-size:12.5px;line-height:1.25;overflow-wrap:anywhere}
+.nameSugg .suggItem{justify-content:flex-start;padding:7px 10px}
+.nameSugg .nth{flex:none;width:52px;height:30px;border-radius:5px;background:#fff;display:grid;place-items:center;overflow:hidden}
+.nameSugg .nth img{width:100%;height:100%;object-fit:contain}
+.nameSugg .ntx{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nameSugg mark{background:none;color:var(--accent);font-weight:700}
+.nameSugg .nHead{padding:6px 12px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+.suggItem .yrs{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-left:6px}
+.catFilter{width:100%;margin:12px 0 6px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.catItem .ci em{font-size:11px;color:#667;font-style:normal;padding:6px;text-align:center}
+.catVer b{font-size:12.5px}
 .catCredit{margin:0 0 10px;font-size:11px;color:var(--muted)}
 .skelBox{aspect-ratio:4/3;border-radius:10px;background:var(--surface2)}
 @media (prefers-reduced-motion:no-preference){.skelBox{animation:shim 1.2s ease-in-out infinite alternate}}
@@ -591,6 +601,7 @@ form{display:grid;gap:10px}
     <input id="catQ" type="search" autocomplete="off" data-i18n-ph="catPh">
     <button class="btn primary" type="submit" data-i18n="search"></button>
   </form>
+  <input class="catFilter" id="catFilter" type="search" autocomplete="off" hidden data-i18n-ph="catFilterPh">
   <p class="catStatus" id="catStatus"></p>
   <div class="catGrid" id="catGrid"></div>
   <p class="catCredit" data-i18n="catCredit"></p>
@@ -612,7 +623,10 @@ form{display:grid;gap:10px}
     <input id="photoInput" type="file" accept="image/*">
   </div>
   <form id="form" autocomplete="off">
-    <label class="field"><span data-i18n="fName"></span><input id="fName" required placeholder="'67 Camaro"></label>
+    <div class="seriesWrap">
+      <label class="field"><span data-i18n="fName"></span><input id="fName" required placeholder="'67 Camaro" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="nameSugg" aria-expanded="false"></label>
+      <div class="sugg nameSugg" id="nameSugg" role="listbox" hidden></div>
+    </div>
     <div class="dup" id="dup" hidden aria-live="polite"></div>
     <div class="catHint" id="catHint" hidden></div>
     <div class="seriesWrap">
@@ -766,7 +780,7 @@ form{display:grid;gap:10px}
       viewing:"Vendo a garagem de {name}", backToMine:"Voltar para a minha", garageOf:"Garagem de {name}", forbidden:"Só o dono pode alterar esse carrinho.", garage:"Minha garagem", garageSub:"Resumo e destaques",
       friends:"Amigos", friendsSub:"Coleções da galera", friendsEyebrow:"Comunidade", collectors:"Colecionadores", news:"Novidades", nCollectors:"colecionadores", allCars:"carrinhos no total",
       memberSince:"desde {d}", lastActive:"ativo {t}", noActivity:"sem atividade", added:"adicionou", fLoading:"Carregando os amigos", fFail:"Não foi possível carregar agora. Tente de novo.", fEmpty:"Nenhuma novidade ainda.",
-      premiumN:"{n} premium", youCap:"Você", goingTo:"Carona até a garagem de {name}", goingHome:"De volta à sua garagem", aboutWarp:"Conheça a Garage 1:64", addedWarp:"{name} chegou na garagem!", catalog:"Catálogo", catPh:"Nome do modelo, ex. Porsche 911", catCredit:"Fotos da Hot Wheels Wiki (hotwheels.fandom.com), contribuição da comunidade.", catSearching:"Buscando no catálogo", catNone:"Nada encontrado. Tente um nome mais curto, como só a marca e o modelo.", catFail:"Não foi possível acessar o catálogo agora.", catPickModel:"Toque no modelo certo", catPickVersion:"Escolha a versão da sua cartela", catLoading:"Carregando as versões", catNoImgs:"Esse modelo não tem fotos no catálogo.", catFound:"Fotos no catálogo", catAll:"ver todos", catChosen:"Foto do catálogo escolhida", fetchingFriends:"Dando uma carona até os amigos", homeTile:"Minha garagem", homeSub:"Voltar para a sua coleção", warpWelcome:"Bem-vindo, {name}!", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
+      premiumN:"{n} premium", youCap:"Você", goingTo:"Carona até a garagem de {name}", goingHome:"De volta à sua garagem", aboutWarp:"Conheça a Garage 1:64", addedWarp:"{name} chegou na garagem!", catalog:"Catálogo", catPh:"Nome do modelo, ex. Porsche 911", catCredit:"Fotos da Hot Wheels Wiki (hotwheels.fandom.com), contribuição da comunidade.", catSearching:"Buscando no catálogo", catNone:"Nada encontrado. Tente um nome mais curto, como só a marca e o modelo.", catFail:"Não foi possível acessar o catálogo agora.", catPickModel:"Toque no modelo certo", catPickVersion:"Escolha a versão da sua cartela", catLoading:"Carregando as versões", catNoImgs:"Esse modelo não tem fotos no catálogo.", catFound:"Fotos no catálogo", catAll:"ver todos", catChosen:"Versão escolhida: foto e dados preenchidos", catFilled:"Dados da versão preenchidos", catFilterPh:"Filtrar por ano, cor, série ou código", catCount:"{n} de {t}", catNoPhoto:"sem foto", catNoMatch:"Nenhuma versão com esse filtro.", nameSuggHead:"Modelos Hot Wheels", fetchingFriends:"Dando uma carona até os amigos", homeTile:"Minha garagem", homeSub:"Voltar para a sua coleção", warpWelcome:"Bem-vindo, {name}!", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
       gHighlights:"Destaques", gTop:"Mais caro", gLow:"Mais barato", gLast:"Último adicionado", gBrands:"Por marca", gLines:"Por linha", gOther:"Originais e outras", gNone:"Cadastre carrinhos para ver os detalhes aqui.", gWow:"{n} carrinhos?!", gWowOne:"Só 1 carrinho?!", gWowZero:"Garagem vazia?!", gNoPrice:"sem preço",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garage 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
@@ -801,7 +815,7 @@ form{display:grid;gap:10px}
       viewing:"Viewing {name}'s garage", backToMine:"Back to mine", garageOf:"{name}'s garage", forbidden:"Only the owner can change this car.", garage:"My garage", garageSub:"Summary and highlights",
       friends:"Friends", friendsSub:"Everyone's collections", friendsEyebrow:"Community", collectors:"Collectors", news:"What's new", nCollectors:"collectors", allCars:"cars in total",
       memberSince:"since {d}", lastActive:"active {t}", noActivity:"no activity", added:"added", fLoading:"Loading friends", fFail:"Couldn't load right now. Try again.", fEmpty:"Nothing new yet.",
-      premiumN:"{n} premium", youCap:"You", goingTo:"Riding over to {name}\'s garage", goingHome:"Back to your garage", aboutWarp:"Meet Garage 1:64", addedWarp:"{name} just parked in your garage!", catalog:"Catalog", catPh:"Model name, e.g. Porsche 911", catCredit:"Photos from the Hot Wheels Wiki (hotwheels.fandom.com), community contributed.", catSearching:"Searching the catalog", catNone:"Nothing found. Try a shorter name, like just the make and model.", catFail:"Couldn\'t reach the catalog right now.", catPickModel:"Tap the right model", catPickVersion:"Pick the version on your card", catLoading:"Loading versions", catNoImgs:"This model has no photos in the catalog.", catFound:"Catalog photos", catAll:"see all", catChosen:"Catalog photo selected", fetchingFriends:"Giving you a ride to your friends", homeTile:"My garage", homeSub:"Back to your collection", warpWelcome:"Welcome, {name}!", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
+      premiumN:"{n} premium", youCap:"You", goingTo:"Riding over to {name}\'s garage", goingHome:"Back to your garage", aboutWarp:"Meet Garage 1:64", addedWarp:"{name} just parked in your garage!", catalog:"Catalog", catPh:"Model name, e.g. Porsche 911", catCredit:"Photos from the Hot Wheels Wiki (hotwheels.fandom.com), community contributed.", catSearching:"Searching the catalog", catNone:"Nothing found. Try a shorter name, like just the make and model.", catFail:"Couldn\'t reach the catalog right now.", catPickModel:"Tap the right model", catPickVersion:"Pick the version on your card", catLoading:"Loading versions", catNoImgs:"This model has no photos in the catalog.", catFound:"Catalog photos", catAll:"see all", catChosen:"Version selected: photo and details filled in", catFilled:"Version details filled in", catFilterPh:"Filter by year, color, series or code", catCount:"{n} of {t}", catNoPhoto:"no photo", catNoMatch:"No version matches this filter.", nameSuggHead:"Hot Wheels models", fetchingFriends:"Giving you a ride to your friends", homeTile:"My garage", homeSub:"Back to your collection", warpWelcome:"Welcome, {name}!", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
       gHighlights:"Highlights", gTop:"Most expensive", gLow:"Cheapest", gLast:"Latest added", gBrands:"By make", gLines:"By line", gOther:"Originals and others", gNone:"Add cars to see the details here.", gWow:"{n} cars?!", gWowOne:"Just 1 car?!", gWowZero:"Empty garage?!", gNoPrice:"no price",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garage 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
@@ -1227,12 +1241,24 @@ form{display:grid;gap:10px}
     const mine = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
     const seen = new Set(), out = [];
     const add = (name, n) => { const k = norm(name); if (!k || seen.has(k)) return; seen.add(k); out.push({ name, n }); };
-    const hit = name => !nq || norm(name).includes(nq);
+    const qw = nq.split(" ").filter(Boolean);
+    const hit = name => { const n = norm(name); return !nq || n.includes(nq) || qw.every(w => n.includes(w)); };
     const starts = name => norm(name).startsWith(nq) || norm(name).replace(/^hw /,"").startsWith(nq);
-    mine.filter(hit).forEach(n => add(n, counts[n]));
-    SERIES.filter(n => nq && starts(n)).forEach(n => add(n));
-    SERIES.filter(hit).forEach(n => add(n));
-    return out.filter(o => norm(o.name) !== nq || o.n).slice(0, 7);
+    const wiki = seriesWiki || [];
+    const yearsOf = name => { const w = wiki.find(x => norm(x.name) === norm(name)); return w ? w.years : null; };
+    const addW = (x) => { const k = norm(x.name); if (!k || seen.has(k)) return; seen.add(k); out.push({ name: x.name, years: x.years }); };
+    mine.filter(hit).forEach(n => { add(n, counts[n]); const y = yearsOf(n); if (y) out[out.length - 1].years = y; });
+    if (nq) {
+      wiki.filter(x => starts(x.name)).forEach(addW);
+      SERIES.filter(starts).forEach(n => add(n));
+      wiki.filter(x => hit(x.name)).forEach(addW);
+      SERIES.filter(hit).forEach(n => add(n));
+    } else {
+      const recent = wiki.filter(x => x.years[0] >= new Date().getFullYear() - 1);
+      (recent.length ? recent : []).forEach(addW);
+      SERIES.forEach(n => add(n));
+    }
+    return out.filter(o => norm(o.name) !== nq || o.n).slice(0, 8);
   }
   function showSugg(){
     const box = $("seriesSugg"), inp = $("fSeries");
@@ -1240,13 +1266,13 @@ form{display:grid;gap:10px}
     const opts = seriesOptions(inp.value);
     if (!opts.length) { hideSugg(); return; }
     suggIdx = -1;
-    box.innerHTML = opts.map((o,i) => `<button type="button" class="suggItem" role="option" data-v="${esc(o.name)}"><span>${esc(o.name)}</span>${o.n?`<small>${esc(o.n>1?t("mineN").replace("{n}",o.n):t("mine"))}</small>`:""}</button>`).join("");
+    box.innerHTML = opts.map((o,i) => `<button type="button" class="suggItem" role="option" data-v="${esc(o.name)}"><span>${esc(o.name)}${o.years?` <em class="yrs">${esc(o.years.slice(0,3).join(" · "))}</em>`:""}</span>${o.n?`<small>${esc(o.n>1?t("mineN").replace("{n}",o.n):t("mine"))}</small>`:""}</button>`).join("");
     box.hidden = false; inp.setAttribute("aria-expanded","true");
   }
   function hideSugg(){ $("seriesSugg").hidden = true; $("fSeries").setAttribute("aria-expanded","false"); suggIdx = -1; }
   function pickSugg(v){ $("fSeries").value = v; hideSugg(); }
   $("fSeries").addEventListener("input", showSugg);
-  $("fSeries").addEventListener("focus", showSugg);
+  $("fSeries").addEventListener("focus", () => { loadNames(); showSugg(); });
   $("fSeries").addEventListener("blur", () => setTimeout(hideSugg, 120));
   $("fSeries").addEventListener("keydown", e => {
     const items = [...$("seriesSugg").querySelectorAll(".suggItem")];
@@ -1363,7 +1389,7 @@ form{display:grid;gap:10px}
   $("garageClose").addEventListener("click", closeAll);
   $("gHighlights").addEventListener("click", e => { const b=e.target.closest(".gItem"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
 
-  function closeAll(){ hideSugg(); closeCat(); ["sheet","about","acctSheet","garage","friends"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; pendingCat=""; }
+  function closeAll(){ hideSugg(); hideNames(); closeCat(); ["sheet","about","acctSheet","garage","friends"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; pendingCat=""; }
   $("aboutBtn").addEventListener("click", async ()=>{ closeAll(); await warp(t("aboutWarp"), async () => {}, "about"); $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus({ preventScroll: true }); });
   $("backupBtn").addEventListener("click", async () => {
     if (!canEdit) return;
@@ -1395,16 +1421,41 @@ form{display:grid;gap:10px}
   const NOT_CAR = /(logo|icon|base|zamak|interior|card|blister|packag|sticker|decal|wheel|tampo|\.png$|\.gif$|\.svg$)/i;
   async function searchModels(q){
     const j = await wiki("&generator=search&gsrnamespace=0&gsrlimit=12&prop=pageimages&piprop=thumbnail&pithumbsize=400&gsrsearch=" + encodeURIComponent(q));
-    return Object.values((j.query && j.query.pages) || {}).sort((a,b) => a.index - b.index)
-      .filter(p => p.thumbnail && !/^(List of|Category|\d{4} )/i.test(p.title) && !/logo/i.test(p.thumbnail.source))
-      .map(p => ({ title: p.title, img: p.thumbnail.source }));
-  }
-  async function modelImages(title){
-    const j = await wiki("&generator=images&gimlimit=100&prop=imageinfo&iiprop=url|size&iiurlwidth=500&titles=" + encodeURIComponent(title));
+    const nq = norm(q), qw = nq.split(" ").filter(Boolean);
+    const score = t => { const n = norm(t); let s = 0; if (n === nq) s += 100; if (n.startsWith(nq)) s += 30; qw.forEach(w => { if (n.split(" ").includes(w)) s += 10; else if (n.includes(w)) s += 4; }); if (/\((monster|1:|oversized|big rigs|gran toros|disambiguation|keychain|clip)/i.test(t)) s -= 15; return s; };
     return Object.values((j.query && j.query.pages) || {})
-      .map(p => ({ name: String(p.title || "").replace(/^File:/, "").replace(/\.[a-z]+$/i, "").replace(/_/g, " "), info: p.imageinfo && p.imageinfo[0] }))
-      .filter(x => x.info && x.info.thumburl && x.info.width >= 250 && !NOT_CAR.test(x.name + "." + (x.info.url || "").split(".").pop()))
-      .map(x => ({ name: x.name, img: x.info.thumburl }));
+      .filter(p => !/^(List of|Category|\d{4} |.*\(disambiguation\))/i.test(p.title) && !(p.thumbnail && /logo/i.test(p.thumbnail.source)))
+      .map(p => ({ title: p.title, img: p.thumbnail ? p.thumbnail.source : "", s: score(p.title) - (p.index || 0) * 0.5 }))
+      .sort((a, b) => b.s - a.s);
+  }
+  /* versões: lidas da tabela da página do modelo, com ano, série, cor, código e a foto certa */
+  const cellText = td => td ? td.innerHTML.replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ").replace(/&#39;/g, "'").trim() : "";
+  async function modelVersions(title){
+    const j = await wiki("&action=parse&prop=text&redirects=1&page=" + encodeURIComponent(title));
+    const html = j && j.parse && j.parse.text && j.parse.text["*"]; if (!html) return [];
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const out = [];
+    for (const table of doc.querySelectorAll("table.wikitable")) {
+      const trs = [...table.querySelectorAll("tr")]; if (!trs.length) continue;
+      const head = [...trs[0].querySelectorAll("th,td")].map(c => c.textContent.trim().toLowerCase());
+      const col = re => head.findIndex(h => re.test(h));
+      const iYear = col(/^year/), iSeries = col(/^series/), iColor = col(/^colou?r/), iToy = col(/toy/), iCol = col(/col\s*#/);
+      if (iYear < 0 || iColor < 0) continue;
+      for (const tr of trs.slice(1)) {
+        const tds = [...tr.querySelectorAll("td")]; if (tds.length < 3) continue;
+        const im = tr.querySelector("img");
+        let src = im ? (im.getAttribute("data-src") || im.getAttribute("src") || "") : "";
+        if (!/^https:/.test(src) || /not[_ ]?available|no[_ ]?image|placeholder/i.test(src)) src = "";
+        src = src.replace(/scale-to-width-down\/\d+/, "scale-to-width-down/500");
+        const seriesRaw = cellText(tds[iSeries]).split("\n").map(x => x.trim()).filter(Boolean);
+        const num = (seriesRaw.find(x => /^\d+\s*\/\s*\d+$/.test(x)) || "").replace(/\s/g, "");
+        const series = seriesRaw.filter(x => !/^\d+\s*\/\s*\d+$/.test(x)).join(" ").replace(/(\D)(\d+\/\d+)$/, "$1").trim();
+        const v = { img: src, year: (cellText(tds[iYear]).match(/\d{4}/) || [""])[0], series, num,
+          color: cellText(tds[iColor]).replace(/\n/g, " "), code: iToy >= 0 ? cellText(tds[iToy]).split(/\s|\n/)[0] : "", col: iCol >= 0 ? cellText(tds[iCol]) : "" };
+        if (v.year || v.img) out.push(v);
+      }
+    }
+    return out.sort((a, b) => (+b.year || 0) - (+a.year || 0));
   }
   const catSkel = n => '<div class="skelBox"></div>'.repeat(n);
   let catMode = "models", catQuery = "", catReq = 0;
@@ -1417,27 +1468,53 @@ form{display:grid;gap:10px}
   async function runCatSearch(){
     const q = $("catQ").value.trim(); if (!q) return;
     const my = ++catReq; catMode = "models"; catQuery = q; $("catBack").hidden = true; $("catTitle").textContent = t("catalog");
+    $("catForm").hidden = false; $("catFilter").hidden = true;
     $("catStatus").textContent = t("catSearching"); $("catGrid").innerHTML = catSkel(6);
     try {
       const list = await searchModels(q); if (my !== catReq) return;
       if (!list.length) { $("catStatus").textContent = t("catNone"); $("catGrid").innerHTML = ""; return; }
       $("catStatus").textContent = t("catPickModel");
-      $("catGrid").innerHTML = list.map(m => `<button type="button" class="catItem" data-model="${esc(m.title)}"><span class="ci"><img src="${esc(m.img)}" alt="" loading="lazy"></span><b>${esc(m.title)}</b></button>`).join("");
+      $("catGrid").innerHTML = list.map(m => `<button type="button" class="catItem" data-model="${esc(m.title)}"><span class="ci">${m.img ? `<img src="${esc(m.img)}" alt="" loading="lazy">` : `<em>${esc(t("catNoPhoto"))}</em>`}</span><b>${esc(m.title)}</b></button>`).join("");
     } catch (e) { if (my === catReq) { $("catStatus").textContent = t("catFail"); $("catGrid").innerHTML = ""; } }
   }
-  async function showVersions(title){
-    const my = ++catReq; catMode = "versions"; $("catBack").hidden = false; $("catTitle").textContent = title;
+  let catVersions = [], catModel = "";
+  function renderVersions(){
+    const f = norm($("catFilter").value);
+    const list = catVersions.filter(v => !f || norm([v.year, v.series, v.color, v.code, v.num, v.col].join(" ")).includes(f));
+    $("catStatus").textContent = t("catPickVersion") + " · " + t("catCount").replace("{n}", list.length).replace("{t}", catVersions.length);
+    $("catGrid").innerHTML = list.slice(0, 120).map((v, i) => `<button type="button" class="catItem catVer" data-v="${catVersions.indexOf(v)}">
+      <span class="ci">${v.img ? `<img src="${esc(v.img)}" alt="" loading="lazy">` : `<em>${esc(t("catNoPhoto"))}</em>`}</span>
+      <b>${esc([v.year, v.series].filter(Boolean).join(" · ") || catModel)}</b>
+      <span>${esc([v.color, v.num, v.code].filter(Boolean).join(" · "))}</span></button>`).join("") || `<p class="gEmpty">${esc(t("catNoMatch"))}</p>`;
+  }
+  async function showVersions(title, filter){
+    const my = ++catReq; catMode = "versions"; catModel = title; $("catBack").hidden = false; $("catTitle").textContent = title;
+    $("catForm").hidden = true; $("catFilter").hidden = false; $("catFilter").value = filter || "";
     $("catStatus").textContent = t("catLoading"); $("catGrid").innerHTML = catSkel(6); $("catSheet").scrollTop = 0;
     try {
-      const imgs = await modelImages(title); if (my !== catReq) return;
-      if (!imgs.length) { $("catStatus").textContent = t("catNoImgs"); $("catGrid").innerHTML = ""; return; }
-      $("catStatus").textContent = t("catPickVersion");
-      $("catGrid").innerHTML = imgs.map(m => `<button type="button" class="catItem" data-img="${esc(m.img)}"><span class="ci"><img src="${esc(m.img)}" alt="" loading="lazy"></span><span>${esc(m.name)}</span></button>`).join("");
+      catVersions = await modelVersions(title); if (my !== catReq) return;
+      if (!catVersions.length) { $("catStatus").textContent = t("catNoImgs"); $("catGrid").innerHTML = ""; return; }
+      renderVersions();
     } catch (e) { if (my === catReq) { $("catStatus").textContent = t("catFail"); $("catGrid").innerHTML = ""; } }
+  }
+  function pickVersion(v){
+    if (v.img) { pendingCat = v.img; pendingPhoto = null; showPhoto(v.img); }
+    if (!$("fName").value.trim()) $("fName").value = catModel;
+    if (v.year) $("fYear").value = v.year;
+    if (v.series) $("fSeries").value = v.series;
+    if (v.num) $("fNum").value = v.num;
+    if (v.code) $("fCode").value = v.code.toUpperCase();
+    if (/car culture|boulevard|premium|team transport|pop culture|fast & furious premium|replica entertainment/i.test(v.series)) $("fType").value = "Premium";
+    else if (/red line club|rlc/i.test(v.series)) $("fType").value = "RLC";
+    $("more").open = true;
+    closeCat(); $("catHint").hidden = true; msg(""); toast(v.img ? "catChosen" : "catFilled"); checkDup();
   }
   function pickCat(url){
     pendingCat = url; pendingPhoto = null; showPhoto(url); closeCat(); $("catHint").hidden = true; msg(""); toast("catChosen");
   }
+  const codeQuery = q => (String(q || "").trim().match(/^[A-Z]{2,4}\d{2,3}$/i) || [""])[0];
+  $("catFilter").addEventListener("input", () => { clearTimeout(catFT); catFT = setTimeout(renderVersions, 120); });
+  let catFT;
   $("catBtn").addEventListener("click", () => openCat());
   $("catForm").addEventListener("submit", e => { e.preventDefault(); runCatSearch(); });
   $("catBack").addEventListener("click", () => { $("catQ").value = catQuery; runCatSearch(); });
@@ -1445,8 +1522,115 @@ form{display:grid;gap:10px}
   $("catScrim").addEventListener("click", closeCat);
   $("catGrid").addEventListener("click", e => {
     const b = e.target.closest(".catItem"); if (!b) return;
-    if (b.dataset.model) showVersions(b.dataset.model); else if (b.dataset.img) pickCat(b.dataset.img);
+    if (b.dataset.model) showVersions(b.dataset.model, codeQuery(catQuery)); else if (b.dataset.v) pickVersion(catVersions[+b.dataset.v]); else if (b.dataset.img) pickCat(b.dataset.img);
   });
+  /* sugestões de nome: lista de modelos da wiki guardada no aparelho, com apoio da busca online */
+  const NAMES_KEY = "garagem164.names";
+  const SKIP_NAME = /(^list of|series|\(disambiguation\)|^category|playset|track set|\bset\b|pack\b|collection$|^\d{4} |convention|treasure hunts?$|^hot wheels (id|unleashed|acceleracers|world race)$)/i;
+  let names = null, namesBusy = null, seriesWiki = null;
+  const MINI = /^(.*) Mini Collection \((\d{4})\)$/;
+  function splitSeries(list){
+    const map = {}, models = [];
+    list.forEach(t => { const m = t.match(MINI); if (m) { (map[m[1]] = map[m[1]] || []).push(+m[2]); } else models.push(t); });
+    seriesWiki = Object.keys(map).map(name => ({ name, years: map[name].sort((a, b) => b - a) })).sort((a, b) => b.years[0] - a.years[0] || a.name.localeCompare(b.name));
+    return models;
+  }
+  const compact = x => norm(x).replace(/ /g, "");
+  function prepNames(list){ return list.map(t => ({ t, n: norm(t), c: compact(t) })); }
+  try { const c = JSON.parse(localStorage.getItem(NAMES_KEY) || "null"); if (c && c.list && c.v === 2 && Date.now() - c.at < 30 * 864e5) names = prepNames(splitSeries(c.list.split("\n"))); } catch (e) {}
+  function loadNames(){
+    if (names || namesBusy) return namesBusy;
+    namesBusy = (async () => {
+      const all = []; let cont = "";
+      for (let i = 0; i < 40; i++) {
+        const j = await wiki("&list=allpages&apnamespace=0&apfilterredir=nonredirects&aplimit=500" + (cont ? "&apcontinue=" + encodeURIComponent(cont) : ""));
+        (j.query && j.query.allpages || []).forEach(p => { if (!SKIP_NAME.test(p.title)) all.push(p.title); });
+        cont = j.continue && j.continue.apcontinue; if (!cont) break;
+      }
+      if (all.length > 500) {
+        names = prepNames(splitSeries(all));
+        try { localStorage.setItem(NAMES_KEY, JSON.stringify({ v: 2, at: Date.now(), list: all.join("\n") })); } catch (e) {}
+        if (!$("seriesSugg").hidden) showSugg();
+      }
+    })().catch(() => {}).finally(() => { namesBusy = null; });
+    return namesBusy;
+  }
+  function rankNames(q){
+    const nq = norm(q), cq = compact(q), qw = nq.split(" ").filter(Boolean);
+    if (!qw.length) return [];
+    const out = [];
+    for (const x of names) {
+      const words = x.n.split(" ");
+      let s = 0, ok = true;
+      for (const w of qw) {
+        if (words.includes(w)) s += 14;
+        else if (words.some(v => v.startsWith(w))) s += 10;
+        else if (x.n.includes(w)) s += 5;
+        else if (w.length >= 3 && x.c.includes(w)) s += 3;
+        else { ok = false; break; }
+      }
+      if (!ok && !(cq.length >= 3 && x.c.includes(cq))) continue;
+      if (!ok) s = 6;
+      if (x.n.startsWith(nq)) s += 25;
+      if (x.n === nq) s += 40;
+      s -= words.length * 0.8 + (/\(/.test(x.t) ? 6 : 0);
+      out.push({ t: x.t, s });
+    }
+    return out.sort((a, b) => b.s - a.s || a.t.length - b.t.length).slice(0, 7).map(x => x.t);
+  }
+  async function onlineNames(q){
+    const j = await wiki("&generator=prefixsearch&gpslimit=8&prop=pageimages&piprop=thumbnail&pithumbsize=120&gpssearch=" + encodeURIComponent(q));
+    return Object.values((j.query && j.query.pages) || {}).sort((a, b) => a.index - b.index)
+      .filter(p => !SKIP_NAME.test(p.title)).map(p => { if (p.thumbnail) thumbs[p.title] = p.thumbnail.source; return p.title; }).slice(0, 7);
+  }
+  const thumbs = {};
+  async function fillThumbs(list){
+    const need = list.filter(t => !(t in thumbs)); if (!need.length) return;
+    try {
+      const j = await wiki("&prop=pageimages&piprop=thumbnail&pithumbsize=120&redirects=1&titles=" + encodeURIComponent(need.join("|")));
+      const pages = Object.values((j.query && j.query.pages) || {});
+      need.forEach(t => { const p = pages.find(p => p.title === t); thumbs[t] = p && p.thumbnail ? p.thumbnail.source : ""; });
+    } catch (e) { need.forEach(t => { thumbs[t] = ""; }); }
+  }
+  const hl = (t, q) => { let h = esc(t); norm(q).split(" ").filter(w => w.length > 1).forEach(w => { h = h.replace(new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "i"), "<mark>$1</mark>"); }); return h; };
+  let nameIdx = -1, nameReq = 0, nameT;
+  function hideNames(){ $("nameSugg").hidden = true; $("fName").setAttribute("aria-expanded", "false"); nameIdx = -1; }
+  function paintNames(list, q){
+    const box = $("nameSugg");
+    if (!list.length || document.activeElement !== $("fName")) { hideNames(); return; }
+    box.innerHTML = `<div class="nHead">${esc(t("nameSuggHead"))}</div>` + list.map(ti => `<button type="button" class="suggItem" role="option" data-v="${esc(ti)}">
+      <span class="nth">${thumbs[ti] ? `<img src="${esc(thumbs[ti])}" alt="">` : ""}</span><span class="ntx">${hl(ti, q)}</span></button>`).join("");
+    box.hidden = false; $("fName").setAttribute("aria-expanded", "true"); nameIdx = -1;
+  }
+  async function suggestNames(){
+    const q = $("fName").value.trim(); const my = ++nameReq;
+    if (!canEdit || q.length < 2) { hideNames(); return; }
+    let list = [];
+    try { list = names ? rankNames(q) : await onlineNames(q); } catch (e) {}
+    if (my !== nameReq) return;
+    paintNames(list, q);
+    await fillThumbs(list);
+    if (my === nameReq && !$("nameSugg").hidden) paintNames(list, q);
+  }
+  function pickName(title){
+    $("fName").value = title; hideNames(); checkDup();
+    openCat(); showVersions(title);
+  }
+  $("fName").addEventListener("input", () => { clearTimeout(nameT); nameT = setTimeout(suggestNames, names ? 90 : 280); });
+  $("fName").addEventListener("focus", () => { loadNames(); if ($("fName").value.trim().length >= 2) suggestNames(); });
+  $("fName").addEventListener("blur", () => setTimeout(hideNames, 150));
+  $("fName").addEventListener("keydown", e => {
+    const items = [...$("nameSugg").querySelectorAll(".suggItem")];
+    if ($("nameSugg").hidden || !items.length) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault(); nameIdx = (nameIdx + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+      items.forEach((b, i) => b.classList.toggle("on", i === nameIdx));
+    } else if (e.key === "Enter" && nameIdx >= 0) { e.preventDefault(); pickName(items[nameIdx].dataset.v); }
+    else if (e.key === "Escape") { e.stopPropagation(); hideNames(); }
+  });
+  $("nameSugg").addEventListener("pointerdown", e => e.preventDefault());
+  $("nameSugg").addEventListener("click", e => { const b = e.target.closest(".suggItem"); if (b) pickName(b.dataset.v); });
+
   /* sugestão automática: ao digitar o modelo num carrinho sem foto, mostra as fotos encontradas */
   let catHintFor = "", catHintT;
   async function catHint(){
@@ -1455,7 +1639,7 @@ form{display:grid;gap:10px}
     if (!canEdit || hasPhoto || q.length < 4) { $("catHint").hidden = true; return; }
     if (q === catHintFor) return; catHintFor = q;
     try {
-      const list = (await searchModels(q)).slice(0, 4);
+      const list = (await searchModels(q)).filter(m => m.img).slice(0, 4);
       if (q !== $("fName").value.trim() || pendingPhoto || pendingCat) return;
       if (!list.length) { $("catHint").hidden = true; return; }
       $("catHint").innerHTML = `<div class="chHead">${esc(t("catFound"))}<button type="button" data-all="1">${esc(t("catAll"))}</button></div><div class="chRow">` +
@@ -1463,11 +1647,11 @@ form{display:grid;gap:10px}
       $("catHint").hidden = false;
     } catch (e) { $("catHint").hidden = true; }
   }
-  $("fName").addEventListener("input", () => { clearTimeout(catHintT); catHintT = setTimeout(catHint, 700); });
+
   $("catHint").addEventListener("click", e => {
     if (e.target.closest("[data-all]")) { openCat(); return; }
     const b = e.target.closest(".catItem"); if (!b) return;
-    openCat(); showVersions(b.dataset.model);
+    openCat(); showVersions(b.dataset.model, codeQuery($("fName").value));
   });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("catSheet").hidden) { e.stopImmediatePropagation(); closeCat(); } }, true);
 
@@ -1566,9 +1750,9 @@ form{display:grid;gap:10px}
 
   /* atualização automática: se o GitHub tiver uma versão mais nova do que a aberta, recarrega uma vez */
   /* versão do app: mostrada no rodapé e na cartela do Sobre */
-  const APP_VERSION = "1.6.0";
+  const APP_VERSION = "1.7.1";
   document.querySelectorAll(".appVersion").forEach(el => el.textContent = APP_VERSION);
-  const BUILD = "202609262343";
+  const BUILD = "202609262355";
   (async () => {
     try {
       const r = await fetch(location.pathname + "?build=" + Date.now(), { cache: "no-store" });
