@@ -310,7 +310,9 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .gStat.gClick b{color:var(--tone)}
 .gStat.gClick small{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
 .gStat.gClick .gGo{font-size:11px;color:var(--tone);letter-spacing:.02em;text-transform:none;white-space:nowrap}
-.gSpark{display:block;width:100%;height:30px;margin:6px 0 4px}
+.gAvgTop{display:flex;align-items:center;gap:8px;min-width:0}
+.gAvgTop b{flex:0 0 auto;overflow:visible}
+.gSpark{display:block;flex:1 1 0;min-width:0;max-width:130px;height:22px;margin-left:auto}
 .gSpark rect{fill:color-mix(in srgb,var(--muted) 55%,transparent)}
 .gSpark rect.hi{fill:var(--cash)}
 .gSpark line{stroke:var(--gold);stroke-width:1.5;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}
@@ -326,6 +328,9 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .warp[data-kind="snail"] .warpBob{display:none}
 .warp[data-kind="snail"] .warpText{color:#F29BB0}
 .warp[data-kind="snail"] .warpLines{opacity:.35}
+/* nomes de carrinhos sempre em maiúsculas, como na cartela */
+.car .meta h3,.fCar,.dupItem b,.gTxt b,.buyRow .bTx b,#fName,#nameSugg .ntx,.catItem[data-model] b,#catTitle{text-transform:uppercase}
+#fName::placeholder{text-transform:none}
 .buysHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:-4px 0 14px}
 .buysHead b{font-family:var(--mono);font-size:26px;color:var(--cash);font-variant-numeric:tabular-nums;white-space:nowrap}
 .buysHead small{font-size:12px;color:var(--muted)}
@@ -1393,7 +1398,7 @@ form{display:grid;gap:10px}
     editing = c || null; pendingPhoto = null; pendingCat = ""; delArmed = false; $("catHint").hidden = true; catHintFor = "";
     $("more").open = !!c;
     $("dup").hidden = true; $("dup").innerHTML = "";
-    $("fName").value = c?.name||""; $("fSeries").value=c?.series||""; $("fNum").value=c?.num||"";
+    $("fName").value = (c?.name||"").toLocaleUpperCase("en-US"); $("fSeries").value=c?.series||""; $("fNum").value=c?.num||"";
     $("fYear").value = c?.year||""; $("fCode").value=c?.code||""; $("fType").value=c?.type||"Mainline";
     $("fCond").value = c?.cond||"Na cartela"; $("fColor").value=c?.color||"#c8322a"; $("fQty").value=c?.qty||1;
     $("fPaid").value = c ? (c.paid ?? "") : DEFAULT_PAID; $("fNotes").value=c?.notes||""; paintPaidHint();
@@ -1444,12 +1449,12 @@ form{display:grid;gap:10px}
   function avgChart(priced, avg){
     const list = [...priced].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0)).slice(-24).map(c => +c.paid);
     if (list.length < 2) return "";
-    const max = Math.max(...list) || 1, n = list.length, w = 100 / n, H = 30;
+    const max = Math.max(...list) || 1, n = list.length, w = 100 / n, H = 22;
     const bars = list.map((p, i) => { const h = Math.max(2, p / max * (H - 2)); return `<rect class="${p > avg ? "hi" : ""}" x="${(i * w + w * .15).toFixed(2)}" y="${(H - h).toFixed(2)}" width="${(w * .7).toFixed(2)}" height="${h.toFixed(2)}" rx="1"></rect>`; }).join("");
     const y = (H - avg / max * (H - 2)).toFixed(2);
     const all = priced.map(c => +c.paid);
-    return `<svg class="gSpark" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">${bars}<line x1="0" x2="100" y1="${y}" y2="${y}"></line></svg>
-      <span class="gAvgLeg"><span>${esc(t("avgLo").replace("{v}", money(Math.min(...all))))}</span><span>${esc(t("avgHi").replace("{v}", money(Math.max(...all))))}</span></span>`;
+    const tip = t("avgLo").replace("{v}", money(Math.min(...all))) + " · " + t("avgHi").replace("{v}", money(Math.max(...all)));
+    return `<svg class="gSpark" viewBox="0 0 100 ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(tip)}"><title>${esc(tip)}</title>${bars}<line x1="0" x2="100" y1="${y}" y2="${y}"></line></svg>`;
   }
   function renderGarage(){
     const total = cars.reduce((s,c)=>s+qtyOf(c),0);
@@ -1466,7 +1471,7 @@ form{display:grid;gap:10px}
         : k === "gCars"
         ? `<button type="button" class="gStat gClick gBlue" id="gCarsBtn"><b>${esc(v)}</b><small><span>${esc(t(k))}</span><span class="gGo">${esc(t("gSeeAll"))}</span></small></button>`
         : k === "gAvg"
-        ? `<div class="gStat"><b>${esc(v)}</b>${avgChart(priced, avg)}<small>${esc(t(k))}</small></div>`
+        ? `<div class="gStat"><div class="gAvgTop"><b>${esc(v)}</b>${avgChart(priced, avg)}</div><small>${esc(t(k))}</small></div>`
         : `<div class="gStat"><b>${esc(v)}</b><small>${esc(t(k))}</small></div>`).join("");
     if (!cars.length) {
       $("gHighlights").innerHTML = `<p class="gEmpty">${esc(t("gNone"))}</p>`;
@@ -1615,7 +1620,7 @@ form{display:grid;gap:10px}
       const trs = [...table.querySelectorAll("tr")]; if (!trs.length) continue;
       const head = [...trs[0].querySelectorAll("th,td")].map(c => c.textContent.trim().toLowerCase());
       const col = re => head.findIndex(h => re.test(h));
-      const iYear = col(/^year/), iSeries = col(/^series/), iColor = col(/^colou?r/), iToy = col(/toy/), iCol = col(/col\s*#/);
+      const iYear = col(/^year/), iSeries = col(/^series/), iColor = col(/^colou?r/), iToy = col(/toy/), iCol = col(/col\s*#/), iTeam = col(/^team|car\s*#/), iDriver = col(/driver/);
       if (iYear < 0 || iColor < 0) continue;
       for (const tr of trs.slice(1)) {
         const tds = [...tr.querySelectorAll("td")]; if (tds.length < 3) continue;
@@ -1627,7 +1632,8 @@ form{display:grid;gap:10px}
         const num = (seriesRaw.find(x => /^\d+\s*\/\s*\d+$/.test(x)) || "").replace(/\s/g, "");
         const series = seriesRaw.filter(x => !/^\d+\s*\/\s*\d+$/.test(x)).join(" ").replace(/(\D)(\d+\/\d+)$/, "$1").trim();
         const v = { img: src, year: (cellText(tds[iYear]).match(/\d{4}/) || [""])[0], series, num,
-          color: cellText(tds[iColor]).replace(/\n/g, " "), code: iToy >= 0 ? cellText(tds[iToy]).split(/\s|\n/)[0] : "", col: iCol >= 0 ? cellText(tds[iCol]) : "" };
+          color: cellText(tds[iColor]).replace(/\n/g, " "), code: iToy >= 0 ? cellText(tds[iToy]).split(/\s|\n/)[0] : "", col: iCol >= 0 ? cellText(tds[iCol]) : "",
+          extra: [iTeam >= 0 ? cellText(tds[iTeam]) : "", iDriver >= 0 ? cellText(tds[iDriver]) : ""].map(x => x.replace(/\s*\n\s*/g, " ")).filter(Boolean).join(" · ") };
         if (v.year || v.img) out.push(v);
       }
     }
@@ -1656,12 +1662,12 @@ form{display:grid;gap:10px}
   let catVersions = [], catModel = "";
   function renderVersions(){
     const f = norm($("catFilter").value);
-    const list = catVersions.filter(v => !f || norm([v.year, v.series, v.color, v.code, v.num, v.col].join(" ")).includes(f));
+    const list = catVersions.filter(v => !f || norm([v.year, v.series, v.color, v.code, v.num, v.col, v.extra].join(" ")).includes(f));
     $("catStatus").textContent = t("catPickVersion") + " · " + t("catCount").replace("{n}", list.length).replace("{t}", catVersions.length);
     $("catGrid").innerHTML = list.slice(0, 120).map((v, i) => `<button type="button" class="catItem catVer" data-v="${catVersions.indexOf(v)}">
       <span class="ci">${v.img ? `<img src="${esc(v.img)}" alt="" loading="lazy">` : `<em>${esc(t("catNoPhoto"))}</em>`}</span>
       <b>${esc([v.year, v.series].filter(Boolean).join(" · ") || catModel)}</b>
-      <span>${esc([v.color, v.num, v.code].filter(Boolean).join(" · "))}</span></button>`).join("") || `<p class="gEmpty">${esc(t("catNoMatch"))}</p>`;
+      ${v.extra ? `<span>${esc(v.extra)}</span>` : ""}<span>${esc([v.color, v.num, v.code].filter(Boolean).join(" · "))}</span></button>`).join("") || `<p class="gEmpty">${esc(t("catNoMatch"))}</p>`;
   }
   async function showVersions(title, filter){
     const my = ++catReq; catMode = "versions"; catModel = title; $("catBack").hidden = false; $("catTitle").textContent = title;
@@ -1670,17 +1676,20 @@ form{display:grid;gap:10px}
     try {
       catVersions = await modelVersions(title); if (my !== catReq) return;
       if (!catVersions.length) { $("catStatus").textContent = t("catNoImgs"); $("catGrid").innerHTML = ""; return; }
+      const f = norm($("catFilter").value);
+      if (f && !catVersions.some(v => norm([v.year, v.series, v.color, v.code, v.num, v.col, v.extra].join(" ")).includes(f))) $("catFilter").value = "";
       renderVersions();
     } catch (e) { if (my === catReq) { $("catStatus").textContent = t("catFail"); $("catGrid").innerHTML = ""; } }
   }
   function pickVersion(v){
     if (v.img) { pendingCat = v.img; pendingPhoto = null; showPhoto(v.img); }
-    if (!$("fName").value.trim()) $("fName").value = catModel;
+    if (!$("fName").value.trim()) $("fName").value = catModel.toLocaleUpperCase("en-US");
     if (v.year) $("fYear").value = v.year;
     if (v.series) $("fSeries").value = v.series;
     if (v.num) $("fNum").value = v.num;
     if (v.code) $("fCode").value = v.code.toUpperCase();
-    if (/car culture|boulevard|premium|team transport|pop culture|fast & furious premium|replica entertainment/i.test(v.series)) $("fType").value = "Premium";
+    if (v.extra && !$("fNotes").value.trim()) $("fNotes").value = v.extra;
+    if (/car culture|boulevard|premium|team transport|pop culture|fast & furious premium|replica entertainment|formula one/i.test(v.series)) $("fType").value = "Premium";
     else if (/red line club|rlc/i.test(v.series)) $("fType").value = "RLC";
     $("more").open = true;
     closeCat(); $("catHint").hidden = true; msg(""); toast(v.img ? "catChosen" : "catFilled"); checkDup();
@@ -1731,22 +1740,33 @@ form{display:grid;gap:10px}
     })().catch(() => {}).finally(() => { namesBusy = null; });
     return namesBusy;
   }
+  const NAME_NOISE = new Set(["hot", "wheels", "hotwheels", "premium", "mainline", "the", "car", "carro", "carrinho", "de", "da", "do", "e", "and", "hw", "new"]);
+  /* ranking tolerante: palavras raras (ex.: "Haas") pesam mais, palavras que não existem na wiki (ex.: "MoneyGram") são ignoradas */
   function rankNames(q){
-    const nq = norm(q), cq = compact(q), qw = nq.split(" ").filter(Boolean);
+    const nq = norm(q), cq = compact(q);
+    const yrs = (nq.match(/\b(19|20)\d{2}\b/g) || []).map(y => y.slice(2));
+    let qw = [...new Set(nq.split(" ").filter(w => w && !NAME_NOISE.has(w) && !/^(19|20)\d{2}$/.test(w)))];
+    if (!qw.length) qw = nq.split(" ").filter(Boolean);
     if (!qw.length) return [];
-    const out = [];
+    const kind = (x, words, w) => words.includes(w) ? 1 : words.some(v => v.startsWith(w)) ? .8 : x.n.includes(w) ? .5 : (w.length >= 3 && x.c.includes(w)) ? .3 : 0;
+    const df = qw.map(() => 0), hits = [];
     for (const x of names) {
       const words = x.n.split(" ");
-      let s = 0, ok = true;
-      for (const w of qw) {
-        if (words.includes(w)) s += 14;
-        else if (words.some(v => v.startsWith(w))) s += 10;
-        else if (x.n.includes(w)) s += 5;
-        else if (w.length >= 3 && x.c.includes(w)) s += 3;
-        else { ok = false; break; }
-      }
-      if (!ok && !(cq.length >= 3 && x.c.includes(cq))) continue;
-      if (!ok) s = 6;
+      const k = qw.map(w => kind(x, words, w));
+      let any = false; k.forEach((v, i) => { if (v) { df[i]++; any = true; } });
+      const whole = cq.length >= 3 && x.c.includes(cq);
+      if (any || whole) hits.push({ x, words, k, whole });
+    }
+    const N = names.length || 1;
+    const wt = df.map((d, i) => d ? Math.log((N + 1) / (d + 1)) * (/^\d+$/.test(qw[i]) && qw.length > 1 ? .55 : 1) : 0);
+    const total = wt.reduce((a, b) => a + b, 0) || 1, maxW = Math.max(...wt);
+    const out = [];
+    for (const { x, words, k, whole } of hits) {
+      let s = 0, key = false;
+      k.forEach((v, i) => { s += v * wt[i]; if (v >= .8 && wt[i] >= maxW * .6) key = true; });
+      if (!key && !whole && !k.every((v, i) => v || !wt[i])) continue;
+      s = s / total * 100 + (whole ? 20 : 0);
+      if (yrs.some(y => words.includes(y))) s += 4;
       if (x.n.startsWith(nq)) s += 25;
       if (x.n === nq) s += 40;
       s -= words.length * 0.8 + (/\(/.test(x.t) ? 6 : 0);
@@ -1756,8 +1776,14 @@ form{display:grid;gap:10px}
   }
   async function onlineNames(q){
     const j = await wiki("&generator=prefixsearch&gpslimit=8&prop=pageimages&piprop=thumbnail&pithumbsize=120&gpssearch=" + encodeURIComponent(q));
-    return Object.values((j.query && j.query.pages) || {}).sort((a, b) => a.index - b.index)
+    const got = Object.values((j.query && j.query.pages) || {}).sort((a, b) => a.index - b.index)
       .filter(p => !SKIP_NAME.test(p.title)).map(p => { if (p.thumbnail) thumbs[p.title] = p.thumbnail.source; return p.title; }).slice(0, 7);
+    if (got.length >= 3) return got;
+    const clean = norm(q).split(" ").filter(w => w && !NAME_NOISE.has(w) && !/^(19|20)\d{2}$/.test(w)).join(" ") || q;
+    const k = await wiki("&generator=search&gsrnamespace=0&gsrlimit=15&prop=templates&tltemplates=Template:Casting&tllimit=50&gsrsearch=" + encodeURIComponent(clean));
+    const more = Object.values((k.query && k.query.pages) || {}).sort((a, b) => a.index - b.index)
+      .filter(p => p.templates && p.templates.length && !got.includes(p.title)).map(p => p.title);
+    return got.concat(more).slice(0, 7);
   }
   const thumbs = {};
   async function fillThumbs(list){
@@ -1789,10 +1815,15 @@ form{display:grid;gap:10px}
     if (my === nameReq && !$("nameSugg").hidden) paintNames(list, q);
   }
   function pickName(title){
-    $("fName").value = title; hideNames(); checkDup();
-    openCat(); showVersions(title);
+    const num = ($("fName").value.match(/#\s*(\d+)/) || [])[1];
+    $("fName").value = title.toLocaleUpperCase("en-US"); hideNames(); checkDup();
+    openCat(); showVersions(title, num ? "#" + num : "");
   }
   $("fName").addEventListener("input", () => { clearTimeout(nameT); nameT = setTimeout(suggestNames, names ? 90 : 280); });
+  $("fName").addEventListener("input", () => {
+    const el = $("fName"), up = el.value.toLocaleUpperCase("en-US");
+    if (up !== el.value) { const a = el.selectionStart, b = el.selectionEnd; el.value = up; try { el.setSelectionRange(a, b); } catch (e) {} }
+  }, true);
   $("fName").addEventListener("focus", () => { loadNames(); if ($("fName").value.trim().length >= 2) suggestNames(); });
   $("fName").addEventListener("blur", () => setTimeout(hideNames, 150));
   $("fName").addEventListener("keydown", e => {
@@ -1869,7 +1900,7 @@ form{display:grid;gap:10px}
 
   $("form").addEventListener("submit", async e => {
     e.preventDefault(); if(!canEdit) return;
-    const name=$("fName").value.trim(); if(!name){ msg("needName"); $("fName").focus(); return; }
+    const name=$("fName").value.trim().toLocaleUpperCase("en-US"); if(!name){ msg("needName"); $("fName").focus(); return; }
     const data = {
       id: editing?.id || "", name, series:$("fSeries").value.trim(), num:$("fNum").value.trim(), year:+$("fYear").value||"",
       code:$("fCode").value.trim().toUpperCase(), type:$("fType").value, cond:$("fCond").value,
@@ -1926,10 +1957,10 @@ form{display:grid;gap:10px}
 
   /* atualização automática: se o GitHub tiver uma versão mais nova do que a aberta, recarrega uma vez */
   /* versão do app: mostrada no rodapé e na cartela do Sobre */
-  const APP_VERSION = "1.9.1"
+  const APP_VERSION = "1.9.4"
   const DEFAULT_PAID = "1.25";
   document.querySelectorAll(".appVersion").forEach(el => el.textContent = APP_VERSION);
-  const BUILD = "202609270050";
+  const BUILD = "202609270110";
   (async () => {
     try {
       const r = await fetch(location.pathname + "?build=" + Date.now(), { cache: "no-store" });
