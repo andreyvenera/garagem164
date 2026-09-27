@@ -185,6 +185,11 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .catCredit{margin:0 0 10px;font-size:11px;color:var(--muted)}
 .skelBox{aspect-ratio:4/3;border-radius:10px;background:var(--surface2)}
 @media (prefers-reduced-motion:no-preference){.skelBox{animation:shim 1.2s ease-in-out infinite alternate}}
+.brandRow{display:flex;align-items:baseline;gap:8px;min-width:0}
+.brandRow h1{flex:none}
+.verSmall{display:none}
+@media (max-width:560px){.brandRow .verTag{display:none}.verSmall{display:inline;font-size:9.5px;padding:0 4px;margin-right:2px}}
+.verTag{flex:none;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:6px;padding:1px 6px;white-space:nowrap;align-self:center}
 .aboutPill{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:5px 12px 5px 9px;border-radius:999px;cursor:pointer;
   border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface));color:var(--text);font-weight:700;font-size:13px}
 .aboutPill svg{color:var(--accent)}
@@ -519,8 +524,8 @@ form{display:grid;gap:10px}
 
 <footer class="bar">
   <div class="brand">
-    <h1><span data-i18n="brand"></span> <span class="acc">1:64</span></h1>
-    <p class="tag" data-i18n="tagline"></p>
+    <div class="brandRow"><h1><span data-i18n="brand"></span> <span class="acc">1:64</span></h1><span class="verTag">v<span class="appVersion"></span></span></div>
+    <p class="tag"><span class="verTag verSmall">v<span class="appVersion"></span></span> <span data-i18n="tagline"></span></p>
   </div>
   <button class="fab" id="add" type="button" data-i18n="add"></button>
 </footer>
@@ -697,7 +702,7 @@ form{display:grid;gap:10px}
         <h2 id="aboutTitle" class="hwName"><span data-i18n="brand"></span> <span class="acc">1:64</span></h2>
       </div>
       <p class="hwLead" data-i18n="aboutLead"></p>
-      <div class="hwTag"><span data-i18n="version"></span><b>1.0.0</b></div>
+      <div class="hwTag"><span data-i18n="version"></span><b class="appVersion"></b></div>
       <div class="hwPanel">
         <dl class="hwFacts">
           <div><dt data-i18n="createdBy"></dt><dd>Andrey Marques</dd></div>
@@ -1543,7 +1548,10 @@ form{display:grid;gap:10px}
   setTimeout(splashReady, 12000);
 
   /* atualização automática: se o GitHub tiver uma versão mais nova do que a aberta, recarrega uma vez */
-  const BUILD = "202609262321";
+  /* versão do app: mostrada no rodapé e na cartela do Sobre */
+  const APP_VERSION = "1.5.0";
+  document.querySelectorAll(".appVersion").forEach(el => el.textContent = APP_VERSION);
+  const BUILD = "202609262327";
   (async () => {
     try {
       const r = await fetch(location.pathname + "?build=" + Date.now(), { cache: "no-store" });
