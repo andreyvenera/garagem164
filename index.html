@@ -1263,6 +1263,19 @@ form{display:grid;gap:10px}
   }
   setTimeout(splashReady, 12000);
 
+  /* atualização automática: se o GitHub tiver uma versão mais nova do que a aberta, recarrega uma vez */
+  const BUILD = "202609262111";
+  (async () => {
+    try {
+      const r = await fetch(location.pathname + "?build=" + Date.now(), { cache: "no-store" });
+      const m = (await r.text()).match(/const BUILD = "(\d+)"/);
+      if (m && m[1] !== BUILD) {
+        const key = "garagem164.reloadedFor";
+        if (sessionStorage.getItem(key) !== m[1]) { sessionStorage.setItem(key, m[1]); location.reload(); }
+      }
+    } catch (e) {}
+  })();
+
   applyLang();
   $("fPaid").addEventListener("input", paintPaidHint);
   load();
