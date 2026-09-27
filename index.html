@@ -2,6 +2,7 @@
 <html lang="pt-BR" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#111418">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -159,6 +160,31 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .hwCopy{margin:0;font-size:2.6cqw;font-weight:700}
 .hwLegal{margin:0;font-size:2.4cqw;line-height:1.3;color:#3d4a60}
 @media (prefers-reduced-motion:no-preference){.about:not([hidden]) .hwCard{animation:cardIn .6s cubic-bezier(.2,1.2,.4,1) both}@keyframes cardIn{from{opacity:0;transform:translateY(30px) rotate(-3deg) scale(.94)}to{opacity:1;transform:none}}}
+.catBtn{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer}
+.photo .photoBtns{flex-wrap:wrap;justify-content:flex-end;left:10px}
+.catHint{display:grid;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--bg)}
+.catHint .chHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.catHint .chHead button{border:0;background:none;color:var(--muted);font-size:12px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:500}
+.chRow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.catScrim{position:fixed;inset:0;z-index:11;background:rgba(0,0,0,.55)}
+#catSheet.sheet{z-index:12}
+.catHead{display:flex;align-items:center;gap:8px}
+.catHead h2{margin:0;font-size:clamp(20px,6vw,26px);line-height:1.05;text-wrap:balance}
+.catBack{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;width:34px;height:34px;font-size:22px;line-height:1;cursor:pointer}
+.catSearch{display:flex;gap:8px;margin:12px 0 6px}
+.catSearch input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.catSearch .btn{flex:none;width:auto;padding:10px 16px}
+.catStatus{margin:0 0 8px;font-size:13px;color:var(--muted);min-height:1em}
+.catGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:12px}
+.catItem{display:grid;gap:4px;padding:6px;border:1px solid var(--line);border-radius:10px;background:var(--bg);cursor:pointer;text-align:left;color:var(--text)}
+.catItem:hover,.catItem:focus-visible{border-color:var(--accent)}
+.catItem .ci{aspect-ratio:4/3;max-width:100%;border-radius:6px;background:#fff;display:grid;place-items:center;overflow:hidden}
+.catItem .ci img{width:100%;height:100%;object-fit:contain}
+.catItem span{font-size:12px;line-height:1.25;overflow-wrap:anywhere;color:var(--muted)}
+.catItem b{font-size:12.5px;line-height:1.25;overflow-wrap:anywhere}
+.catCredit{margin:0 0 10px;font-size:11px;color:var(--muted)}
+.skelBox{aspect-ratio:4/3;border-radius:10px;background:var(--surface2)}
+@media (prefers-reduced-motion:no-preference){.skelBox{animation:shim 1.2s ease-in-out infinite alternate}}
 .aboutPill{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:5px 12px 5px 9px;border-radius:999px;cursor:pointer;
   border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface));color:var(--text);font-weight:700;font-size:13px}
 .aboutPill svg{color:var(--accent)}
@@ -534,6 +560,22 @@ form{display:grid;gap:10px}
 </div>
 
 <div class="scrim" id="scrim" hidden></div>
+<div class="catScrim" id="catScrim" hidden></div>
+<section class="sheet catSheet" id="catSheet" hidden aria-modal="true" role="dialog" aria-labelledby="catTitle">
+  <div class="grab"></div>
+  <div class="catHead">
+    <button type="button" class="catBack" id="catBack" hidden aria-label="Voltar">‹</button>
+    <h2 id="catTitle" data-i18n="catalog"></h2>
+  </div>
+  <form class="catSearch" id="catForm" role="search">
+    <input id="catQ" type="search" autocomplete="off" data-i18n-ph="catPh">
+    <button class="btn primary" type="submit" data-i18n="search"></button>
+  </form>
+  <p class="catStatus" id="catStatus"></p>
+  <div class="catGrid" id="catGrid"></div>
+  <p class="catCredit" data-i18n="catCredit"></p>
+  <div class="actions"><button class="btn" type="button" id="catClose" data-i18n="close"></button></div>
+</section>
 
 <section class="sheet" id="sheet" hidden aria-modal="true" role="dialog" aria-labelledby="sheetTitle">
   <div class="grab"></div>
@@ -544,6 +586,7 @@ form{display:grid;gap:10px}
     <div class="photoBtns" id="photoLabel">
       <label for="camInput" class="cam"><span aria-hidden="true">📷</span> <span data-i18n="camera"></span></label>
       <label for="photoInput" data-i18n="gallery"></label>
+      <button type="button" class="catBtn" id="catBtn"><span aria-hidden="true">📚</span> <span data-i18n="catalog"></span></button>
     </div>
     <input id="camInput" type="file" accept="image/*" capture="environment">
     <input id="photoInput" type="file" accept="image/*">
@@ -551,6 +594,7 @@ form{display:grid;gap:10px}
   <form id="form" autocomplete="off">
     <label class="field"><span data-i18n="fName"></span><input id="fName" required placeholder="'67 Camaro"></label>
     <div class="dup" id="dup" hidden aria-live="polite"></div>
+    <div class="catHint" id="catHint" hidden></div>
     <div class="seriesWrap">
       <label class="field"><span data-i18n="fSeries"></span><input id="fSeries" placeholder="HW Dream Garage" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="seriesSugg" aria-expanded="false"></label>
       <div class="sugg" id="seriesSugg" role="listbox" hidden></div>
@@ -702,7 +746,7 @@ form{display:grid;gap:10px}
       viewing:"Vendo a garagem de {name}", backToMine:"Voltar para a minha", garageOf:"Garagem de {name}", forbidden:"Só o dono pode alterar esse carrinho.", garage:"Minha garagem", garageSub:"Resumo e destaques",
       friends:"Amigos", friendsSub:"Coleções da galera", friendsEyebrow:"Comunidade", collectors:"Colecionadores", news:"Novidades", nCollectors:"colecionadores", allCars:"carrinhos no total",
       memberSince:"desde {d}", lastActive:"ativo {t}", noActivity:"sem atividade", added:"adicionou", fLoading:"Carregando os amigos", fFail:"Não foi possível carregar agora. Tente de novo.", fEmpty:"Nenhuma novidade ainda.",
-      premiumN:"{n} premium", youCap:"Você", goingTo:"Carona até a garagem de {name}", goingHome:"De volta à sua garagem", fetchingFriends:"Dando uma carona até os amigos", homeTile:"Minha garagem", homeSub:"Voltar para a sua coleção", warpWelcome:"Bem-vindo, {name}!", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
+      premiumN:"{n} premium", youCap:"Você", goingTo:"Carona até a garagem de {name}", goingHome:"De volta à sua garagem", catalog:"Catálogo", catPh:"Nome do modelo, ex. Porsche 911", catCredit:"Fotos da Hot Wheels Wiki (hotwheels.fandom.com), contribuição da comunidade.", catSearching:"Buscando no catálogo", catNone:"Nada encontrado. Tente um nome mais curto, como só a marca e o modelo.", catFail:"Não foi possível acessar o catálogo agora.", catPickModel:"Toque no modelo certo", catPickVersion:"Escolha a versão da sua cartela", catLoading:"Carregando as versões", catNoImgs:"Esse modelo não tem fotos no catálogo.", catFound:"Fotos no catálogo", catAll:"ver todos", catChosen:"Foto do catálogo escolhida", fetchingFriends:"Dando uma carona até os amigos", homeTile:"Minha garagem", homeSub:"Voltar para a sua coleção", warpWelcome:"Bem-vindo, {name}!", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
       gHighlights:"Destaques", gTop:"Mais caro", gLow:"Mais barato", gLast:"Último adicionado", gBrands:"Por marca", gLines:"Por linha", gOther:"Originais e outras", gNone:"Cadastre carrinhos para ver os detalhes aqui.", gWow:"{n} carrinhos?!", gWowOne:"Só 1 carrinho?!", gWowZero:"Garagem vazia?!", gNoPrice:"sem preço",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garage 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
@@ -737,7 +781,7 @@ form{display:grid;gap:10px}
       viewing:"Viewing {name}'s garage", backToMine:"Back to mine", garageOf:"{name}'s garage", forbidden:"Only the owner can change this car.", garage:"My garage", garageSub:"Summary and highlights",
       friends:"Friends", friendsSub:"Everyone's collections", friendsEyebrow:"Community", collectors:"Collectors", news:"What's new", nCollectors:"collectors", allCars:"cars in total",
       memberSince:"since {d}", lastActive:"active {t}", noActivity:"no activity", added:"added", fLoading:"Loading friends", fFail:"Couldn't load right now. Try again.", fEmpty:"Nothing new yet.",
-      premiumN:"{n} premium", youCap:"You", goingTo:"Riding over to {name}\'s garage", goingHome:"Back to your garage", fetchingFriends:"Giving you a ride to your friends", homeTile:"My garage", homeSub:"Back to your collection", warpWelcome:"Welcome, {name}!", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
+      premiumN:"{n} premium", youCap:"You", goingTo:"Riding over to {name}\'s garage", goingHome:"Back to your garage", catalog:"Catalog", catPh:"Model name, e.g. Porsche 911", catCredit:"Photos from the Hot Wheels Wiki (hotwheels.fandom.com), community contributed.", catSearching:"Searching the catalog", catNone:"Nothing found. Try a shorter name, like just the make and model.", catFail:"Couldn\'t reach the catalog right now.", catPickModel:"Tap the right model", catPickVersion:"Pick the version on your card", catLoading:"Loading versions", catNoImgs:"This model has no photos in the catalog.", catFound:"Catalog photos", catAll:"see all", catChosen:"Catalog photo selected", fetchingFriends:"Giving you a ride to your friends", homeTile:"My garage", homeSub:"Back to your collection", warpWelcome:"Welcome, {name}!", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
       gHighlights:"Highlights", gTop:"Most expensive", gLow:"Cheapest", gLast:"Latest added", gBrands:"By make", gLines:"By line", gOther:"Originals and others", gNone:"Add cars to see the details here.", gWow:"{n} cars?!", gWowOne:"Just 1 car?!", gWowZero:"Empty garage?!", gNoPrice:"no price",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garage 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
@@ -766,7 +810,7 @@ form{display:grid;gap:10px}
   let session = null; try { session = JSON.parse(store.get("garagem164.session") || "null"); } catch (e) {}
   let viewing = session ? session.user.username : "", viewingName = session ? session.user.name : "", userDir = [];
   let cars = [], filter = "all", mode = "loading", canEdit = false;
-  let editing = null, pendingPhoto = null, delArmed = false, busy = 0;
+  let editing = null, pendingPhoto = null, pendingCat = "", delArmed = false, busy = 0;
   const localPreview = {}; // fotos recém enviadas, mostradas até o Drive gerar a miniatura
 
   const sortSaved = store.get("garagem164.sort"); if (sortSaved) $("sort").value = sortSaved;
@@ -826,7 +870,7 @@ form{display:grid;gap:10px}
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const PH = "ph.webp";
   const carSvg = () => `<img class="ph" src="${PH}" alt="">`;
-  const photoUrl = c => c.photoId ? (localPreview[c.photoId] || "https://drive.google.com/thumbnail?id=" + encodeURIComponent(c.photoId) + "&sz=w1000") : "";
+  const photoUrl = c => c.photoId ? (localPreview[c.photoId] || "https://drive.google.com/thumbnail?id=" + encodeURIComponent(c.photoId) + "&sz=w1000") : (c.photoUrl || "");
 
   function toast(k){ const el=$("toast"); el.textContent=t(k); el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,2200); }
   const msg = k => { $("msg").textContent = k ? t(k) : ""; };
@@ -1034,7 +1078,7 @@ form{display:grid;gap:10px}
         </span>
         <span class="gtGo" aria-hidden="true">›</span></button>`;
     }).join("");
-    const photo = c => c.photoId ? "https:" + "/" + "/drive.google.com/thumbnail?id=" + encodeURIComponent(c.photoId) + "&sz=w400" : "";
+    const photo = c => c.photoId ? "https:" + "/" + "/drive.google.com/thumbnail?id=" + encodeURIComponent(c.photoId) + "&sz=w400" : (c.photoUrl || "");
     $("fFeed").innerHTML = community.feed.length ? community.feed.map(f => {
       const url = photo(f.car);
       return `<button type="button" class="feedItem" data-u="${esc(f.owner)}" data-n="${esc(f.ownerName)}">
@@ -1211,7 +1255,7 @@ form{display:grid;gap:10px}
   }
   function openSheet(c){
     closeAll();
-    editing = c || null; pendingPhoto = null; delArmed = false;
+    editing = c || null; pendingPhoto = null; pendingCat = ""; delArmed = false; $("catHint").hidden = true; catHintFor = "";
     $("more").open = !!c;
     $("dup").hidden = true; $("dup").innerHTML = "";
     $("fName").value = c?.name||""; $("fSeries").value=c?.series||""; $("fNum").value=c?.num||"";
@@ -1299,7 +1343,7 @@ form{display:grid;gap:10px}
   $("garageClose").addEventListener("click", closeAll);
   $("gHighlights").addEventListener("click", e => { const b=e.target.closest(".gItem"); if(!b) return; const c=cars.find(x=>x.id===b.dataset.id); if(c) openSheet(c); });
 
-  function closeAll(){ hideSugg(); ["sheet","about","acctSheet","garage","friends"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; }
+  function closeAll(){ hideSugg(); closeCat(); ["sheet","about","acctSheet","garage","friends"].forEach(id=>$(id).hidden=true); $("scrim").hidden=true; editing=null; pendingPhoto=null; pendingCat=""; }
   $("aboutBtn").addEventListener("click", ()=>{ closeAll(); $("scrim").hidden=false; $("about").hidden=false; $("about").scrollTop=0; $("aboutClose").focus({ preventScroll: true }); });
   $("backupBtn").addEventListener("click", async () => {
     if (!canEdit) return;
@@ -1320,6 +1364,93 @@ form{display:grid;gap:10px}
   $("scrim").addEventListener("click", closeAll);
   document.addEventListener("keydown", e => { if(e.key==="Escape" && !$("scrim").hidden) closeAll(); });
 
+  /* catálogo de fotos: Hot Wheels Wiki */
+  const WIKI = "https:" + "/" + "/hotwheels.fandom.com/api.php?format=json&origin=*&action=query";
+  const catCache = {};
+  async function wiki(params){
+    const k = params; if (catCache[k]) return catCache[k];
+    const r = await fetch(WIKI + params); if (!r.ok) throw new Error("wiki");
+    const j = await r.json(); catCache[k] = j; return j;
+  }
+  const NOT_CAR = /(logo|icon|base|zamak|interior|card|blister|packag|sticker|decal|wheel|tampo|\.png$|\.gif$|\.svg$)/i;
+  async function searchModels(q){
+    const j = await wiki("&generator=search&gsrnamespace=0&gsrlimit=12&prop=pageimages&piprop=thumbnail&pithumbsize=400&gsrsearch=" + encodeURIComponent(q));
+    return Object.values((j.query && j.query.pages) || {}).sort((a,b) => a.index - b.index)
+      .filter(p => p.thumbnail && !/^(List of|Category|\d{4} )/i.test(p.title) && !/logo/i.test(p.thumbnail.source))
+      .map(p => ({ title: p.title, img: p.thumbnail.source }));
+  }
+  async function modelImages(title){
+    const j = await wiki("&generator=images&gimlimit=100&prop=imageinfo&iiprop=url|size&iiurlwidth=500&titles=" + encodeURIComponent(title));
+    return Object.values((j.query && j.query.pages) || {})
+      .map(p => ({ name: String(p.title || "").replace(/^File:/, "").replace(/\.[a-z]+$/i, "").replace(/_/g, " "), info: p.imageinfo && p.imageinfo[0] }))
+      .filter(x => x.info && x.info.thumburl && x.info.width >= 250 && !NOT_CAR.test(x.name + "." + (x.info.url || "").split(".").pop()))
+      .map(x => ({ name: x.name, img: x.info.thumburl }));
+  }
+  const catSkel = n => '<div class="skelBox"></div>'.repeat(n);
+  let catMode = "models", catQuery = "", catReq = 0;
+  function openCat(q){
+    $("catScrim").hidden = false; $("catSheet").hidden = false; $("catSheet").scrollTop = 0;
+    $("catQ").value = q || $("fName").value.trim();
+    if ($("catQ").value) runCatSearch(); else { $("catGrid").innerHTML = ""; $("catStatus").textContent = ""; setTimeout(() => $("catQ").focus(), 60); }
+  }
+  function closeCat(){ $("catScrim").hidden = true; $("catSheet").hidden = true; }
+  async function runCatSearch(){
+    const q = $("catQ").value.trim(); if (!q) return;
+    const my = ++catReq; catMode = "models"; catQuery = q; $("catBack").hidden = true; $("catTitle").textContent = t("catalog");
+    $("catStatus").textContent = t("catSearching"); $("catGrid").innerHTML = catSkel(6);
+    try {
+      const list = await searchModels(q); if (my !== catReq) return;
+      if (!list.length) { $("catStatus").textContent = t("catNone"); $("catGrid").innerHTML = ""; return; }
+      $("catStatus").textContent = t("catPickModel");
+      $("catGrid").innerHTML = list.map(m => `<button type="button" class="catItem" data-model="${esc(m.title)}"><span class="ci"><img src="${esc(m.img)}" alt="" loading="lazy"></span><b>${esc(m.title)}</b></button>`).join("");
+    } catch (e) { if (my === catReq) { $("catStatus").textContent = t("catFail"); $("catGrid").innerHTML = ""; } }
+  }
+  async function showVersions(title){
+    const my = ++catReq; catMode = "versions"; $("catBack").hidden = false; $("catTitle").textContent = title;
+    $("catStatus").textContent = t("catLoading"); $("catGrid").innerHTML = catSkel(6); $("catSheet").scrollTop = 0;
+    try {
+      const imgs = await modelImages(title); if (my !== catReq) return;
+      if (!imgs.length) { $("catStatus").textContent = t("catNoImgs"); $("catGrid").innerHTML = ""; return; }
+      $("catStatus").textContent = t("catPickVersion");
+      $("catGrid").innerHTML = imgs.map(m => `<button type="button" class="catItem" data-img="${esc(m.img)}"><span class="ci"><img src="${esc(m.img)}" alt="" loading="lazy"></span><span>${esc(m.name)}</span></button>`).join("");
+    } catch (e) { if (my === catReq) { $("catStatus").textContent = t("catFail"); $("catGrid").innerHTML = ""; } }
+  }
+  function pickCat(url){
+    pendingCat = url; pendingPhoto = null; showPhoto(url); closeCat(); $("catHint").hidden = true; msg(""); toast("catChosen");
+  }
+  $("catBtn").addEventListener("click", () => openCat());
+  $("catForm").addEventListener("submit", e => { e.preventDefault(); runCatSearch(); });
+  $("catBack").addEventListener("click", () => { $("catQ").value = catQuery; runCatSearch(); });
+  $("catClose").addEventListener("click", closeCat);
+  $("catScrim").addEventListener("click", closeCat);
+  $("catGrid").addEventListener("click", e => {
+    const b = e.target.closest(".catItem"); if (!b) return;
+    if (b.dataset.model) showVersions(b.dataset.model); else if (b.dataset.img) pickCat(b.dataset.img);
+  });
+  /* sugestão automática: ao digitar o modelo num carrinho sem foto, mostra as fotos encontradas */
+  let catHintFor = "", catHintT;
+  async function catHint(){
+    const q = $("fName").value.trim();
+    const hasPhoto = pendingPhoto || pendingCat || (editing && (editing.photoId || editing.photoUrl));
+    if (!canEdit || hasPhoto || q.length < 4) { $("catHint").hidden = true; return; }
+    if (q === catHintFor) return; catHintFor = q;
+    try {
+      const list = (await searchModels(q)).slice(0, 4);
+      if (q !== $("fName").value.trim() || pendingPhoto || pendingCat) return;
+      if (!list.length) { $("catHint").hidden = true; return; }
+      $("catHint").innerHTML = `<div class="chHead">${esc(t("catFound"))}<button type="button" data-all="1">${esc(t("catAll"))}</button></div><div class="chRow">` +
+        list.map(m => `<button type="button" class="catItem" data-model="${esc(m.title)}" title="${esc(m.title)}"><span class="ci"><img src="${esc(m.img)}" alt="" loading="lazy"></span></button>`).join("") + "</div>";
+      $("catHint").hidden = false;
+    } catch (e) { $("catHint").hidden = true; }
+  }
+  $("fName").addEventListener("input", () => { clearTimeout(catHintT); catHintT = setTimeout(catHint, 700); });
+  $("catHint").addEventListener("click", e => {
+    if (e.target.closest("[data-all]")) { openCat(); return; }
+    const b = e.target.closest(".catItem"); if (!b) return;
+    openCat(); showVersions(b.dataset.model);
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("catSheet").hidden) { e.stopImmediatePropagation(); closeCat(); } }, true);
+
   async function shrink(file, max=1000){
     const url = URL.createObjectURL(file);
     try{
@@ -1332,7 +1463,7 @@ form{display:grid;gap:10px}
   }
   async function onPhoto(e){
     const f = e.target.files[0]; e.target.value=""; if(!f) return;
-    try{ pendingPhoto = await shrink(f); showPhoto(pendingPhoto); msg(""); }
+    try{ pendingPhoto = await shrink(f); pendingCat = ""; showPhoto(pendingPhoto); msg(""); }
     catch(err){ msg("badImg"); }
   }
   $("photoInput").addEventListener("change", onPhoto);
@@ -1363,7 +1494,7 @@ form{display:grid;gap:10px}
       id: editing?.id || "", name, series:$("fSeries").value.trim(), num:$("fNum").value.trim(), year:+$("fYear").value||"",
       code:$("fCode").value.trim().toUpperCase(), type:$("fType").value, cond:$("fCond").value,
       color:$("fColor").value, qty:Math.max(1,+$("fQty").value||1), paid:$("fPaid").value===""?"":+$("fPaid").value,
-      notes:$("fNotes").value.trim(), createdAt: editing?.createdAt || ""
+      notes:$("fNotes").value.trim(), createdAt: editing?.createdAt || "", photoUrl: pendingPhoto ? "" : pendingCat
     };
     const was = !!editing, photo = pendingPhoto;
     $("save").disabled=true; $("save").textContent=t("saving"); busy++; setMode();
@@ -1412,7 +1543,7 @@ form{display:grid;gap:10px}
   setTimeout(splashReady, 12000);
 
   /* atualização automática: se o GitHub tiver uma versão mais nova do que a aberta, recarrega uma vez */
-  const BUILD = "202609262219";
+  const BUILD = "202609262321";
   (async () => {
     try {
       const r = await fetch(location.pathname + "?build=" + Date.now(), { cache: "no-store" });
