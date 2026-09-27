@@ -693,7 +693,7 @@ form{display:grid;gap:10px}
       viewing:"Vendo a garagem de {name}", backToMine:"Voltar para a minha", garageOf:"Garagem de {name}", forbidden:"Só o dono pode alterar esse carrinho.", garage:"Minha garagem", garageSub:"Resumo e destaques",
       friends:"Amigos", friendsSub:"Coleções da galera", friendsEyebrow:"Comunidade", collectors:"Colecionadores", news:"Novidades", nCollectors:"colecionadores", allCars:"carrinhos no total",
       memberSince:"desde {d}", lastActive:"ativo {t}", noActivity:"sem atividade", added:"adicionou", fLoading:"Carregando os amigos", fFail:"Não foi possível carregar agora. Tente de novo.", fEmpty:"Nenhuma novidade ainda.",
-      premiumN:"{n} premium", youCap:"Você", goingTo:"Indo para a garagem de {name}", goingHome:"De volta à sua garagem", fetchingFriends:"Dando uma carona até os amigos", homeTile:"Minha garagem", homeSub:"Voltar para a sua coleção", warpWelcome:"Bem-vindo, {name}!", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
+      premiumN:"{n} premium", youCap:"Você", goingTo:"Carona até a garagem de {name}", goingHome:"De volta à sua garagem", fetchingFriends:"Dando uma carona até os amigos", homeTile:"Minha garagem", homeSub:"Voltar para a sua coleção", warpWelcome:"Bem-vindo, {name}!", fxNote:"Cotação US$ 1 = R$ {r}", garageOpen:"Abrir Minha garagem", garageEyebrow:"Detalhes da coleção", gCars:"carrinhos", gModels:"modelos diferentes", gInvested:"investido", gAvg:"preço médio",
       gHighlights:"Destaques", gTop:"Mais caro", gLow:"Mais barato", gLast:"Último adicionado", gBrands:"Por marca", gLines:"Por linha", gOther:"Originais e outras", gNone:"Cadastre carrinhos para ver os detalhes aqui.", gWow:"{n} carrinhos?!", gWowOne:"Só 1 carrinho?!", gWowZero:"Garagem vazia?!", gNoPrice:"sem preço",
       version:"Versão", createdBy:"Criado por", year:"Ano", backupT:"Backup da coleção", backupD:"Cria uma cópia da coleção como Planilha Google, com totais e links das fotos, na pasta Garage 1:64 Backups do seu Drive.", backupBtn:"Fazer backup agora", backupWorking:"Criando backup", backupDone:"{n} carrinhos salvos.", backupOpen:"Abrir planilha", backupFail:"Não foi possível criar o backup. Confira a internet e tente de novo.",
       aboutLead:"Um app pessoal criado para organizar e acompanhar coleções de Hot Wheels, facilitar novas compras e evitar modelos repetidos.",
@@ -728,7 +728,7 @@ form{display:grid;gap:10px}
       viewing:"Viewing {name}'s garage", backToMine:"Back to mine", garageOf:"{name}'s garage", forbidden:"Only the owner can change this car.", garage:"My garage", garageSub:"Summary and highlights",
       friends:"Friends", friendsSub:"Everyone's collections", friendsEyebrow:"Community", collectors:"Collectors", news:"What's new", nCollectors:"collectors", allCars:"cars in total",
       memberSince:"since {d}", lastActive:"active {t}", noActivity:"no activity", added:"added", fLoading:"Loading friends", fFail:"Couldn't load right now. Try again.", fEmpty:"Nothing new yet.",
-      premiumN:"{n} premium", youCap:"You", goingTo:"Heading to {name}\'s garage", goingHome:"Back to your garage", fetchingFriends:"Giving you a ride to your friends", homeTile:"My garage", homeSub:"Back to your collection", warpWelcome:"Welcome, {name}!", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
+      premiumN:"{n} premium", youCap:"You", goingTo:"Riding over to {name}\'s garage", goingHome:"Back to your garage", fetchingFriends:"Giving you a ride to your friends", homeTile:"My garage", homeSub:"Back to your collection", warpWelcome:"Welcome, {name}!", fxNote:"", garageOpen:"Open My garage", garageEyebrow:"Collection details", gCars:"cars", gModels:"different models", gInvested:"invested", gAvg:"average price",
       gHighlights:"Highlights", gTop:"Most expensive", gLow:"Cheapest", gLast:"Latest added", gBrands:"By make", gLines:"By line", gOther:"Originals and others", gNone:"Add cars to see the details here.", gWow:"{n} cars?!", gWowOne:"Just 1 car?!", gWowZero:"Empty garage?!", gNoPrice:"no price",
       version:"Version", createdBy:"Created by", year:"Year", backupT:"Collection backup", backupD:"Creates a copy of the collection as a Google Sheet, with totals and photo links, in the Garage 1:64 Backups folder of your Drive.", backupBtn:"Back up now", backupWorking:"Creating backup", backupDone:"{n} cars saved.", backupOpen:"Open spreadsheet", backupFail:"Couldn't create the backup. Check your connection and try again.",
       aboutLead:"A personal app built to organize and track Hot Wheels collections, make new purchases easier and avoid duplicate models.",
@@ -948,7 +948,7 @@ form{display:grid;gap:10px}
       viewing = username; viewingName = name || username;
       cars = readCache(); loaded = cars !== null; if (!loaded) cars = []; seen = null; lastTotal = null;
       paintView(); render(); await load();
-    });
+    }, home ? "bob" : "car");
     render(true);
   }
   const goHome = () => session && switchGarage(session.user.username, session.user.name);
@@ -1403,7 +1403,7 @@ form{display:grid;gap:10px}
   setTimeout(splashReady, 12000);
 
   /* atualização automática: se o GitHub tiver uma versão mais nova do que a aberta, recarrega uma vez */
-  const BUILD = "202609262203";
+  const BUILD = "202609262209";
   (async () => {
     try {
       const r = await fetch(location.pathname + "?build=" + Date.now(), { cache: "no-store" });
