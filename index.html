@@ -403,10 +403,6 @@ form{display:grid;gap:10px}
         <button class="aboutPill" id="aboutBtn" type="button"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><path d="M10 9v5"/><circle cx="10" cy="6" r=".6" fill="currentColor"/></svg><span data-i18n="about"></span></button>
       </div>
     </div>
-    <div class="viewBar" id="viewBar" hidden>
-      <span id="viewText"></span>
-      <button type="button" class="link" id="backMine" data-i18n="backToMine"></button>
-    </div>
     <button class="stats" id="garageBtn" type="button" data-i18n-aria="garageOpen">
       <span class="stat"><b id="sTotal">0</b><small data-i18n="cars"></small></span>
       <span class="stat"><b id="sPaid">$0</b><small data-i18n="invested"></small></span>
@@ -872,11 +868,9 @@ form{display:grid;gap:10px}
   function paintView(){
     const mine = isMine();
     canEdit = mine;
-    $("viewBar").hidden = mine || !session;
     $("homeTile").hidden = mine || !session;
     $("homeTile").parentElement.classList.toggle("three", !mine && !!session);
     $("homeSub").textContent = t("homeSub");
-    if (!mine) $("viewText").innerHTML = esc(t("viewing")).replace("{name}", "<b>" + esc(viewingName) + "</b>");
     const label = mine ? t("garage") : t("garageOf").replace("{name}", viewingName);
     $("gtLabel").textContent = label; $("garageTitleText").textContent = label;
     setMode();
@@ -917,7 +911,6 @@ form{display:grid;gap:10px}
     render(true);
   }
   const goHome = () => session && switchGarage(session.user.username, session.user.name);
-  $("backMine").addEventListener("click", goHome);
   $("homeTile").addEventListener("click", goHome);
 
   async function openAcct(){
